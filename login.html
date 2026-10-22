@@ -15,6 +15,29 @@
       background: var(--black);
       margin: 0;
       padding: 1rem;
+      position: relative;
+    }
+    .back-home-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      transition: 0.2s;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .back-home-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border-color: var(--turquoise);
     }
     .auth-container {
       background: var(--black-2);
@@ -25,46 +48,17 @@
       max-width: 400px;
       box-shadow: 0 0 40px rgba(0,240,212,0.1);
     }
-    .auth-tabs {
-      display: flex;
-      background: var(--black-3);
-      border-radius: 12px;
-      padding: 0.3rem;
-      margin-bottom: 2rem;
-    }
-    .auth-tab {
-      flex: 1;
-      padding: 0.8rem;
-      background: transparent;
-      border: none;
-      color: var(--text-dim);
-      font-family: inherit;
-      font-weight: 700;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .auth-tab.active {
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c;
-    }
+    .auth-tabs { display: flex; background: var(--black-3); border-radius: 12px; padding: 0.3rem; margin-bottom: 2rem; }
+    .auth-tab { flex: 1; padding: 0.8rem; background: transparent; border: none; color: var(--text-dim); font-family: inherit; font-weight: 700; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+    .auth-tab.active { background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c; }
     .auth-form { display: none; }
     .auth-form.active { display: block; }
     .auth-form h2 { color: #fff; font-size: 1.2rem; margin-bottom: 0.5rem; text-align: center; }
     .auth-sub { color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem; }
-    .auth-form label {
-      display: block; color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;
-    }
-    .auth-form input {
-      width: 100%; padding: 0.9rem; background: var(--black-3);
-      border: 1px solid var(--border); border-radius: 10px;
-      color: #fff; font-family: inherit; font-size: 0.95rem;
-      margin-bottom: 1rem; outline: none; transition: 0.2s;
-    }
+    .auth-form label { display: block; color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .auth-form input { width: 100%; padding: 0.9rem; background: var(--black-3); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-family: inherit; font-size: 0.95rem; margin-bottom: 1rem; outline: none; transition: 0.2s; box-sizing: border-box; }
     .auth-form input:focus { border-color: var(--turquoise); box-shadow: 0 0 10px rgba(0,240,212,0.2); }
-    .auth-form .checkbox-row {
-      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-dim); font-size: 0.8rem;
-    }
+    .auth-form .checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-dim); font-size: 0.8rem; }
     .btn-primary.full { width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem; }
     .auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-dim); }
     .auth-switch a { color: var(--turquoise); text-decoration: none; font-weight: 700; cursor: pointer; }
@@ -72,13 +66,17 @@
 </head>
 <body>
 
+  <!-- دکمه بازگشت به صفحه اصلی (مستقیم به home.html) -->
+  <a href="home.html" class="back-home-btn">
+    🏠 بازگشت به صفحه اصلی
+  </a>
+
   <div class="auth-container">
     <div class="auth-tabs">
       <button class="auth-tab active" data-target="login">ورود</button>
       <button class="auth-tab" data-target="signup">ساخت حساب</button>
     </div>
 
-    <!-- فرم ورود -->
     <form id="loginForm" class="auth-form active">
       <h2>خوش برگشتی 👋</h2>
       <p class="auth-sub">وارد حساب Navaa خودت شو</p>
@@ -90,34 +88,26 @@
       <p class="auth-switch">حساب نداری؟ <a onclick="switchTab('signup')">ثبت‌نام کن</a></p>
     </form>
 
-    <!-- فرم ثبت‌نام -->
     <form id="signupForm" class="auth-form">
       <h2>به Navaa خوش اومدی ✨</h2>
       <p class="auth-sub">برای ساخت حساب، اطلاعاتت رو وارد کن</p>
-      
       <label>نام و نام خانوادگی</label>
       <input type="text" name="fullname" required placeholder="مثلاً علی رضایی">
-      
       <label>ایمیل <span style="color:#ff2e4d;">*</span></label>
       <input type="email" name="email" required placeholder="you@example.com">
-      
       <label>شماره تماس <span style="color:#a0a0a0;font-size:.75rem;">(اختیاری)</span></label>
       <input type="tel" name="phone" placeholder="09123456789" pattern="[0-9]{11}">
-      
       <label>رمز عبور</label>
       <input type="password" name="password" required minlength="4" placeholder="حداقل ۴ کاراکتر">
-
       <label class="checkbox-row">
         <input type="checkbox" name="terms" required>
         <span>قوانین Navaa رو می‌پذیرم</span>
       </label>
-
       <button type="submit" class="btn-primary full">✨ ساخت حساب</button>
       <p class="auth-switch">حساب داری؟ <a onclick="switchTab('login')">وارد شو</a></p>
     </form>
   </div>
 
-  <!-- ✅ اسکریپت اصلی (بدون تداخل) -->
   <script>
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
@@ -126,15 +116,19 @@
     window.switchTab = function(tabName) {
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-      document.querySelector(`.auth-tab[data-target="${tabName}"]`).classList.add('active');
-      document.getElementById(tabName === 'login' ? 'loginForm' : 'signupForm').classList.add('active');
+      const tabBtn = document.querySelector(`.auth-tab[data-target="${tabName}"]`);
+      const form = document.getElementById(tabName === 'login' ? 'loginForm' : 'signupForm');
+      if (tabBtn) tabBtn.classList.add('active');
+      if (form) form.classList.add('active');
     };
 
     document.querySelectorAll('.auth-tab').forEach(tab => {
-      tab.addEventListener('click', () => switchTab(tab.dataset.target));
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab(tab.dataset.target);
+      });
     });
 
-    // ورود
     document.getElementById('loginForm').addEventListener('submit', e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -150,7 +144,6 @@
       window.location.href = 'gallery.html';
     });
 
-    // ثبت‌نام
     document.getElementById('signupForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -175,7 +168,6 @@
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
-      // ارسال به سرور (فقط از این طریق)
       if (window.saveToCloud) {
         await window.saveToCloud(USERS_KEY, JSON.stringify(users));
       }
@@ -186,7 +178,6 @@
     });
   </script>
 
-  <!-- 🔥 اتصال به Firebase -->
   <script type="module">
     import { syncDatabase, saveToCloud } from './js/firebase-sync.js';
     window.saveToCloud = saveToCloud;
