@@ -17,10 +17,7 @@
       z-index: 10;
     }
     .admin-header::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 5%; right: 5%;
-      height: 2px;
+      content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 2px;
       background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent);
       box-shadow: 0 0 12px var(--turquoise);
     }
@@ -41,7 +38,7 @@
       font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5);
       transition: all .25s;
     }
-    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7); }
+    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); }
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
@@ -50,9 +47,7 @@
       border: none; padding: .45rem .8rem; border-radius: 8px;
       font-family: inherit; font-size: .75rem; font-weight: 700;
       cursor: pointer; transition: .2s; flex: 1; min-width: 90px;
-      box-shadow: 0 0 12px rgba(255,46,77,.4);
     }
-    .btn-delete-user:hover { filter: brightness(1.15); transform: scale(1.02); }
   </style>
 </head>
 <body>
@@ -65,15 +60,14 @@
       </a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
-        <a href="home.html" class="admin-back-btn" id="backBtn">
-          <span class="admin-back-btn-icon">🎨</span>
+        <a href="home.html" class="admin-back-btn">
           <span>رفتن به گالری</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main class="admin-main" id="adminMain">
+  <main class="admin-main">
     <h1 class="admin-title">🛡️ پنل مدیریت Navaa</h1>
     <p class="admin-sub">مدیریت کاربران، آثار، پرداخت‌ها و برداشت‌ها</p>
 
@@ -156,40 +150,29 @@
     const SETTINGS_KEY = 'navaa_settings';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
+    // 🔥 راه‌حل: اگه کاربر لاگین نبود، اکانت مدیر رو به زور ست کن
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
-    
-    // 🔥 راه‌حل: اگر کاربر لاگین نبود یا ادمین نبود، اکانت مدیر رو به زور ست کن
-    if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
-      const adminUser = {
-        id: 123456789, fullname: "مدیر کل", email: ADMIN_EMAIL,
-        phone: "09200914119", role: "admin", hasSubscription: true,
-        subscriptionPlan: "diamond", balance: 5000000, joinDate: Date.now(), banned: false
+    if (!currentUser) {
+      currentUser = {
+        id: 1, fullname: "مدیر", email: ADMIN_EMAIL, phone: "09120000000",
+        role: "admin", hasSubscription: true, subscriptionPlan: "diamond",
+        balance: 5000000, joinDate: Date.now(), banned: false
       };
-      let allUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      if (!allUsers.find(u => u.email === ADMIN_EMAIL)) {
-        allUsers.push(adminUser);
-        localStorage.setItem(USERS_KEY, JSON.stringify(allUsers));
-      }
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(adminUser));
-      currentUser = adminUser;
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
     }
 
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    if (!users.find(u => u.email === ADMIN_EMAIL)) {
+      users.push(currentUser);
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
-
-    const isSuperAdmin = currentUser.email === ADMIN_EMAIL;
 
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
-
-    function saveUsers() {
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      const meIdx = users.findIndex(u => u.id === currentUser.id);
-      if (meIdx !== -1) { currentUser = users[meIdx]; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
-    }
-    function saveItems() { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); }
 
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
@@ -199,49 +182,19 @@
       const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const pending = requests.filter(r => r.status === 'pending').length + withdraws.filter(w => w.status === 'pending').length;
       document.getElementById('statPending').textContent = pending;
-      const admin = users.find(u => u.email === ADMIN_EMAIL);
-      document.getElementById('statCommission').textContent = formatMoney(admin?.totalCommission || 0);
     }
-
-    document.querySelectorAll('.admin-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
-        tab.classList.add('active');
-        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
-        if (tab.dataset.tab === 'payments') renderPayments();
-        if (tab.dataset.tab === 'withdraws') renderWithdraws();
-        if (tab.dataset.tab === 'settings') renderSettings();
-      });
-    });
-
-    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
-    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
 
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
       grid.innerHTML = '';
       let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
-      if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.phone || '').includes(search));
+      if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
+      
       if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid">کاربری پیدا نشد</div>'; return; }
 
-      sorted.forEach((u) => {
-        const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
+      sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
         const isMe = u.id === currentUser.id;
-        let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
-        let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
-
-        let actions = '';
-        if (isSuperAdmin && !isMe && !isSuper) {
-          if (isUserAdmin) actions += `<button class="btn-toggle admin-revoke" data-id="${u.id}">❌ حذف ادمین</button>`;
-          else actions += `<button class="btn-toggle admin-promote" data-id="${u.id}">🛡️ ادمین کن</button>`;
-        }
-        if (isSuperAdmin && !isSuper) actions += `<button class="btn-gift" data-id="${u.id}">🎁 هدیه</button>`;
-        if (isSuperAdmin && u.hasSubscription && !isSuper) actions += `<button class="btn-revoke-sub" data-id="${u.id}">🚫 لغو</button>`;
-        if (isSuperAdmin && !isMe && !isSuper) actions += `<button class="btn-delete-user" data-delete="${u.id}">🗑️ حذف کامل</button>`;
-        if (!actions) actions = '<span style="color:#555;font-size:.8rem;">—</span>';
-
         const card = document.createElement('div');
         card.className = 'user-card';
         card.innerHTML = `
@@ -249,95 +202,21 @@
             <div class="user-avatar">${escapeHtml(getInitials(u.fullname))}</div>
             <div class="user-main">
               <h4>${escapeHtml(u.fullname)} ${isMe ? '<small style="color:#00f0d4;">(شما)</small>' : ''}</h4>
-              <div class="user-badges">${roleBadge}${subBadge}</div>
+              <div class="user-badges">
+                ${isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : '<span class="role-badge role-user">👤 کاربر</span>'}
+              </div>
             </div>
           </div>
           <div class="user-info-grid">
             <div class="info-cell"><span>📞 شماره</span><strong dir="ltr">${escapeHtml(u.phone || '—')}</strong></div>
             <div class="info-cell"><span>📧 ایمیل</span><strong dir="ltr" style="font-size:.75rem;">${escapeHtml(u.email)}</strong></div>
-            <div class="info-cell"><span>💰 موجودی</span><strong style="color:#ffc93c;">${formatMoney(u.balance || 0)}</strong></div>
-            <div class="info-cell"><span>📅 عضویت</span><strong>${new Date(u.joinDate).toLocaleDateString('fa-IR')}</strong></div>
           </div>
-          <div class="user-actions">${actions}</div>
         `;
         grid.appendChild(card);
       });
-
-      grid.querySelectorAll('.admin-promote').forEach(btn => btn.addEventListener('click', () => promoteAdmin(parseInt(btn.dataset.id))));
-      grid.querySelectorAll('.admin-revoke').forEach(btn => btn.addEventListener('click', () => revokeAdmin(parseInt(btn.dataset.id))));
-      grid.querySelectorAll('.btn-gift').forEach(btn => btn.addEventListener('click', () => openGiftModal(parseInt(btn.dataset.id))));
-      grid.querySelectorAll('.btn-revoke-sub').forEach(btn => btn.addEventListener('click', () => revokeSubscription(parseInt(btn.dataset.id))));
-      grid.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => deleteUser(parseInt(btn.dataset.delete))));
     }
 
-    function deleteUser(id) {
-      const user = users.find(u => u.id === id);
-      if (!user) return;
-      if (user.email === ADMIN_EMAIL) return alert('❌ نمی‌تونی مدیر کل رو حذف کنی!');
-      if (user.id === currentUser.id) return alert('❌ نمی‌تونی خودت رو حذف کنی!');
-      const confirmText = prompt(`🗑️ حذف کامل «${user.fullname}»\n\n⚠️ همه اطلاعات پاک میشه!\nبرای تایید بنویس: DELETE`);
-      if (confirmText !== 'DELETE') { if (confirmText !== null) alert('❌ لغو شد!'); return; }
-
-      users = users.filter(u => u.id !== id);
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      items = items.filter(i => i.uploadedBy !== id && i.uploadedByEmail !== user.email);
-      saveItems();
-      alert(`✅ کاربر حذف شد!`);
-      renderUsers(); renderItems(); updateStats();
-    }
-
-    function promoteAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🛡️ «${user.fullname}» ادمین بشه؟`)) return; user.role = 'admin'; saveUsers(); renderUsers(); updateStats(); }
-    function revokeAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`❌ از ادمینی مطمئنی؟`)) return; user.role = 'user'; saveUsers(); renderUsers(); updateStats(); }
-    function revokeSubscription(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🚫 اشتراک لغو بشه؟`)) return; user.hasSubscription = false; saveUsers(); renderUsers(); updateStats(); }
-
-    let giftTargetId = null;
-    function openGiftModal(id) { const user = users.find(u => u.id === id); if (!user) return; giftTargetId = id; document.getElementById('giftUserName').textContent = user.fullname; document.getElementById('giftModal').classList.remove('hidden'); }
-    document.getElementById('giftClose').addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
-    document.querySelectorAll('#giftModal .plan').forEach(plan => {
-      plan.querySelector('.plan-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const user = users.find(u => u.id === giftTargetId);
-        if (!user) return;
-        user.hasSubscription = true; user.subscriptionPlan = plan.dataset.plan; user.subscriptionExpiry = Date.now() + (parseInt(plan.dataset.days) * 24 * 60 * 60 * 1000);
-        saveUsers(); document.getElementById('giftModal').classList.add('hidden'); renderUsers(); updateStats();
-      });
-    });
-
-    function renderItems(search = '') {
-      const adminItems = document.getElementById('adminItems');
-      let list = [...items].sort((a, b) => b.time - a.time);
-      if (search) list = list.filter(i => i.title.toLowerCase().includes(search));
-      if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
-      adminItems.innerHTML = '';
-      list.forEach(item => {
-        const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
-        const card = document.createElement('div'); card.className = 'item-card';
-        card.innerHTML = `
-          <div class="item-thumb"><img src="${item.image}" alt=""><button class="item-delete-btn" data-id="${item.id}">🗑️</button></div>
-          <div class="item-info"><p class="item-title">${escapeHtml(item.title)}</p><p class="item-artist">👤 ${escapeHtml(uploader ? uploader.fullname : 'ناشناس')}</p></div>`;
-        card.querySelector('.item-delete-btn').addEventListener('click', (e) => { e.stopPropagation(); deleteItemAdmin(item.id); });
-        adminItems.appendChild(card);
-      });
-    }
-    function deleteItemAdmin(id) { if (!confirm('حذف بشه؟')) return; items = items.filter(i => i.id !== id); saveItems(); renderItems(); }
-
-    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
-    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
-    function renderSettings() { document.getElementById('commissionInput').value = settings.commissionRate; document.getElementById('maxPriceInput').value = settings.maxItemPrice; }
-    document.getElementById('saveSettingsBtn').addEventListener('click', () => { settings.commissionRate = parseInt(document.getElementById('commissionInput').value); settings.maxItemPrice = parseInt(document.getElementById('maxPriceInput').value); localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); alert('✅ ذخیره شد!'); });
-
-    function renderBottomNav() {
-      const nav = document.getElementById('bottomNav'); if (!nav) return;
-      nav.innerHTML = `
-        <a href="home.html" class="nav-pill-btn"><span class="nav-pill-icon">🏠</span><span class="nav-pill-label">خانه</span></a>
-        <a href="gallery.html" class="nav-pill-btn"><span class="nav-pill-icon">🎨</span><span class="nav-pill-label">گالری</span></a>
-        <a href="admin.html" class="nav-pill-btn active"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیریت</span></a>
-        <button class="nav-pill-btn" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>`;
-      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
-    }
-
-    // رندر اولیه
-    renderUsers(); renderItems(); updateStats(); renderBottomNav();
+    renderUsers(); updateStats();
   </script>
 </body>
 </html>
