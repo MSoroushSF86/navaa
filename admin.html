@@ -98,7 +98,9 @@
       </a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
-        <a href="gallery.html" class="admin-back-btn">
+        <!-- دکمه‌های ورود/ثبت‌نام برای حالتی که کاربر لاگین نیست -->
+        <a href="login.html" id="loginBtn" style="display:none; background:linear-gradient(135deg,var(--gold),#ff8c00); color:#1a1100 !important; text-decoration:none; padding:.8rem 1.5rem; border-radius:999px; font-weight:800; font-size:.92rem; box-shadow:0 4px 20px rgba(255,201,60,.5);">🔑 ورود / ثبت‌نام</a>
+        <a href="gallery.html" class="admin-back-btn" id="galleryBtn" style="display:none;">
           <span class="admin-back-btn-icon">🎨</span>
           <span>رفتن به گالری</span>
         </a>
@@ -106,7 +108,7 @@
     </div>
   </header>
 
-  <main class="admin-main">
+  <main class="admin-main" id="adminMain" style="display:none;">
     <h1 class="admin-title">🛡️ پنل مدیریت Navaa</h1>
     <p class="admin-sub">مدیریت کاربران، آثار، پرداخت‌ها و برداشت‌ها</p>
 
@@ -180,7 +182,6 @@
 
   <nav class="bottom-nav" id="bottomNav"></nav>
 
-  <!-- 🔥 اسکریپت اصلی (بدون import) -->
   <script>
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
@@ -195,12 +196,21 @@
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
 
-    if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
+    // چک کردن لاگین و دسترسی
+    if (!currentUser) {
+      document.getElementById('loginBtn').style.display = 'inline-block';
+      document.getElementById('galleryBtn').style.display = 'none';
+      // پنل مدیریت رو مخفی نگه دار
+    } else if (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL) {
       alert('⛔ دسترسی نداری!');
       window.location.href = 'gallery.html';
+    } else {
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('galleryBtn').style.display = 'inline-block';
+      document.getElementById('adminMain').style.display = 'block';
     }
 
-    const isSuperAdmin = currentUser.email === ADMIN_EMAIL;
+    const isSuperAdmin = currentUser ? (currentUser.email === ADMIN_EMAIL) : false;
 
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -213,6 +223,7 @@
     }
 
     function saveUsers() {
+      if (!currentUser) return;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       const meIdx = users.findIndex(u => u.id === currentUser.id);
       if (meIdx !== -1) { currentUser = users[meIdx]; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
@@ -220,6 +231,7 @@
     function saveItems() { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); }
 
     (function setupSuperAdmin() {
+      if (!currentUser) return;
       const admin = users.find(u => u.email === ADMIN_EMAIL);
       if (admin) {
         let changed = false;
@@ -255,11 +267,12 @@
       });
     });
 
-    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
-    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
+    document.getElementById('userSearch')?.addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
+    document.getElementById('itemSearch')?.addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
 
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
+      if (!grid) return;
       grid.innerHTML = '';
       let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
       if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.phone || '').includes(search));
@@ -268,7 +281,7 @@
       sorted.forEach((u) => {
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
         const isSuper = u.email === ADMIN_EMAIL;
-        const isMe = u.id === currentUser.id;
+        const isMe = u.id === currentUser?.id;
         let roleBadge = '';
         if (isSuper) roleBadge = '<span class="role-badge role-super">👑 مدیر کل</span>';
         else if (isUserAdmin) roleBadge = '<span class="role-badge role-admin">🛡️ ادمین</span>';
@@ -339,8 +352,8 @@
 
     let giftTargetId = null;
     function openGiftModal(id) { const user = users.find(u => u.id === id); if (!user) return; giftTargetId = id; document.getElementById('giftUserName').textContent = user.fullname; document.getElementById('giftModal').classList.remove('hidden'); }
-    document.getElementById('giftClose').addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
-    document.getElementById('giftModal').addEventListener('click', (e) => { if (e.target.id === 'giftModal') { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; } });
+    document.getElementById('giftClose')?.addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
+    document.getElementById('giftModal')?.addEventListener('click', (e) => { if (e.target.id === 'giftModal') { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; } });
     document.querySelectorAll('#giftModal .plan').forEach(plan => {
       plan.querySelector('.plan-btn').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -355,6 +368,7 @@
 
     function renderItems(search = '') {
       const adminItems = document.getElementById('adminItems');
+      if (!adminItems) return;
       let list = [...items].sort((a, b) => b.time - a.time);
       if (search) list = list.filter(i => i.title.toLowerCase().includes(search) || (i.artist || '').toLowerCase().includes(search));
       if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
@@ -385,6 +399,7 @@
 
     function renderPayments() {
       const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], list = document.getElementById('paymentsList');
+      if (!list) return;
       if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
       list.innerHTML = '';
       requests.sort((a,b) => b.time - a.time).forEach(req => {
@@ -423,6 +438,7 @@
 
     function renderWithdraws() {
       const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], list = document.getElementById('withdrawsList');
+      if (!list) return;
       if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
       list.innerHTML = '';
       requests.sort((a,b) => b.time - a.time).forEach(req => {
@@ -454,7 +470,7 @@
     function rejectWithdraw(id) { const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], req = requests.find(r => r.id === id); if (!req) return; if (!confirm('رد بشه؟')) return; req.status = 'rejected'; req.rejectedAt = Date.now(); localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests)); alert('❌ رد شد'); renderWithdraws(); updateStats(); }
 
     function renderSettings() { document.getElementById('commissionInput').value = settings.commissionRate; document.getElementById('maxPriceInput').value = settings.maxItemPrice; }
-    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
       const commission = parseInt(document.getElementById('commissionInput').value), maxPrice = parseInt(document.getElementById('maxPriceInput').value);
       if (commission < 0 || commission > 50) return alert('❌ کمیسیون بین ۰ تا ۵۰!');
       if (maxPrice < 10000) return alert('❌ حداکثر قیمت حداقل ۱۰,۰۰۰!');
@@ -463,6 +479,7 @@
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
+      if (!currentUser) return;
       const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
       const isSuperUser = currentUser.email === ADMIN_EMAIL;
       const subActive = currentUser.hasSubscription ? 'is-active' : '';
@@ -483,7 +500,9 @@
     }
 
     // رندر اولیه
-    renderUsers(); renderItems(); updateStats(); renderBottomNav();
+    if (currentUser) {
+      renderUsers(); renderItems(); updateStats(); renderBottomNav();
+    }
   </script>
 
   <!-- 🔥 اتصال به Firebase و به‌روزرسانی لحظه‌ای دیتا -->
@@ -497,16 +516,15 @@
     });
     const db = getFirestore(app);
 
-    // به جای رفرش کردن صفحه، فقط متغیرها رو آپدیت میکنیم
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
-        users.length = 0; 
-        users.push(...cloudUsers); 
-        
-        // رندر مجدد لیست بدون رفرش صفحه
-        if (typeof renderUsers === 'function') renderUsers();
-        if (typeof updateStats === 'function') updateStats();
+        if (typeof users !== 'undefined') {
+          users.length = 0; 
+          users.push(...cloudUsers); 
+          if (typeof renderUsers === 'function') renderUsers();
+          if (typeof updateStats === 'function') updateStats();
+        }
       }
     });
   </script>
