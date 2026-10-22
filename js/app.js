@@ -37,7 +37,7 @@ if (!localStorage.getItem(SETTINGS_KEY)) {
 
 // ================== 2. CURRENT USER ==================
 let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY)) || null;
-if (!currentUser) window.location.href = 'index.html';
+if (!currentUser) window.location.href = 'home.html'; // ✅ تغییر از index به home
 
 // ============================================================
 // 📊 محدودیت آپلود
@@ -111,7 +111,6 @@ function checkUploadPermission(fileSize) {
   const log = getDailyLog();
   const todayLog = log[currentUser.email];
   
-  // ✅ آپلود رایگان برای ۵۰ فایل اول (اگر اشتراک ندارد)
   const isFreeUser = !hasSubscription && currentUser.email !== ADMIN_EMAIL && currentUser.role !== 'admin';
   
   if (isFreeUser) {
@@ -119,11 +118,9 @@ function checkUploadPermission(fileSize) {
     if (userUploadsCount >= 50) {
       return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان شما تمام شده!\n\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
     }
-    // برای ۵۰ فایل اول محدودیت حجم و تعداد روزانه نداریم
     return { allowed: true };
   }
 
-  // محدودیت‌های عادی برای اشتراک‌دارها
   if (fileSize > limit.maxImageSize) {
     return { allowed: false, reason: `❌ حجم فایل زیاده!\n📦 پلن: ${limit.label}\n🎯 حداکثر: ${formatLimitSize(limit.maxImageSize)}` };
   }
@@ -401,7 +398,6 @@ const SAMPLE_DATA = [
 ];
 
 function loadSampleData() {
-  // ❌ نمونه‌های خودکار حذف شدن — فقط آثار کاربرا نمایش داده میشن
   console.log('ℹ️ لود نمونه‌ها غیرفعاله — فقط آثار کاربرا نمایش داده میشن');
 }
 
@@ -510,7 +506,7 @@ function renderBottomNav() {
   nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => {
     if (confirm('از حساب خارج بشی؟')) {
       localStorage.removeItem(CURRENT_KEY);
-      window.location.href = 'index.html';
+      window.location.href = 'home.html'; // ✅ تغییر از index به home
     }
   });
 }
@@ -1212,7 +1208,6 @@ function bindUploadModal() {
     const permission = checkUploadPermission(currentImageSize);
     if (!permission.allowed) { alert(permission.reason); return; }
 
-    // ✅ مقدار isPremium از متغیر گلوبال (توی initPremiumSection ست میشه)
     const isPremium = window.__navaaPremium?.isPremium === true;
     const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
 
@@ -1249,10 +1244,7 @@ function bindUploadModal() {
 
       updateDailyLog(currentImageSize);
 
-      // ✅✅✅ پاداش آپلود
-      console.log('🎁 Calling giveUploadReward for:', currentUser.email);
       const rewardResult = giveUploadReward(currentUser.email);
-      console.log('🎁 Result:', rewardResult);
 
       let rewardMsg = '';
       if (rewardResult.success) {
@@ -1261,9 +1253,6 @@ function bindUploadModal() {
         } else {
           rewardMsg = `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان به کیف پولت اضافه شد\n(از حساب مدیر کسر شد)`;
         }
-      } else {
-        console.error('❌ Reward failed:', rewardResult.reason);
-        rewardMsg = `\n⚠️ پاداش آپلود اعمال نشد: ${rewardResult.reason}`;
       }
 
       closeModal();
@@ -1365,7 +1354,6 @@ function initPremiumSection() {
     premiumSection.dataset.price = val;
   });
 
-  // ✅✅✅ ذخیره وضعیت premium در گلوبال (مهم!)
   window.__navaaPremium = { isPremium: false, price: 0 };
 
   isPremiumCheck.addEventListener('change', () => {
@@ -1520,7 +1508,7 @@ function enableDragScroll() {
       (freshUser.bannedReason ? `دلیل: ${freshUser.bannedReason}\n\n` : '') +
       'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.'
     );
-    window.location.href = 'index.html';
+    window.location.href = 'home.html'; // ✅ تغییر از index به home
     return;
   }
 
@@ -1535,7 +1523,6 @@ function enableDragScroll() {
 // ================== 26. INIT ==================
 loadSampleData();
 
-// ✅ initPremiumSection باید قبل از bindUploadModal باشه
 initPremiumSection();
 bindUploadModal();
 
