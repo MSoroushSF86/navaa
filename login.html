@@ -117,13 +117,8 @@
     </form>
   </div>
 
-  <!-- ✅ اسکریپت درست -->
-    <script type="module">
-    import { syncDatabase, saveToCloud } from './js/firebase-sync.js';
-
-    // اول دیتابیس رو سینک میکنیم تا کاربران قبلی لود بشن
-    await syncDatabase();
-
+  <!-- ✅ اسکریپت اصلی (بدون تداخل) -->
+  <script>
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
@@ -179,24 +174,23 @@
 
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-     
-    // ارسال کاربر جدید به دیتابیس ابری (فقط یک خط)
-fetch('https://api.jsonbin.io/v3/b/671a6c92ad19ca34f8b4e021', {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Master-Key': '$2a$10$YOUR_API_KEY_HERE' // این رو بعدا برات پر میکنم
-  },
-  body: JSON.stringify(users)
-});
- 
-      // ارسال به سرور
-      await saveToCloud(USERS_KEY, JSON.stringify(users));
+      
+      // ارسال به سرور (فقط از این طریق)
+      if (window.saveToCloud) {
+        await window.saveToCloud(USERS_KEY, JSON.stringify(users));
+      }
       
       localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
       alert('✨ حساب با موفقیت ساخته شد!');
       window.location.href = 'gallery.html';
     });
+  </script>
+
+  <!-- 🔥 اتصال به Firebase -->
+  <script type="module">
+    import { syncDatabase, saveToCloud } from './js/firebase-sync.js';
+    window.saveToCloud = saveToCloud;
+    await syncDatabase();
   </script>
 </body>
 </html>
