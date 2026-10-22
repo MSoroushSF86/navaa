@@ -7,65 +7,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .admin-header {
-      position: relative;
-      background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%),
-                  radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%),
-                  linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
-      padding: 1.2rem 1.5rem;
-      border-bottom: 1px solid rgba(0,240,212,.15);
-      z-index: 10;
-    }
-    .admin-header::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 5%; right: 5%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent);
-      box-shadow: 0 0 12px var(--turquoise);
-    }
+    .admin-header { position: relative; background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%), radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%); padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,240,212,.15); z-index: 10; }
+    .admin-header::after { content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 2px; background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent); box-shadow: 0 0 12px var(--turquoise); }
     .admin-header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .admin-logo-box { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
-    .admin-badge-large {
-      display: inline-flex; align-items: center; gap: .4rem;
-      background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1));
-      border: 1px solid rgba(255,201,60,.5); color: var(--gold);
-      padding: .5rem 1.1rem; border-radius: 999px;
-      font-size: .82rem; font-weight: 800; box-shadow: 0 0 16px rgba(255,201,60,.3);
-    }
-    .admin-back-btn {
-      display: inline-flex; align-items: center; gap: .5rem;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c !important; text-decoration: none;
-      padding: .8rem 1.5rem; border-radius: 999px;
-      font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5);
-      transition: all .25s;
-    }
+    .admin-badge-large { display: inline-flex; align-items: center; gap: .4rem; background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1)); border: 1px solid rgba(255,201,60,.5); color: var(--gold); padding: .5rem 1.1rem; border-radius: 999px; font-size: .82rem; font-weight: 800; box-shadow: 0 0 16px rgba(255,201,60,.3); }
+    .admin-back-btn { display: inline-flex; align-items: center; gap: .5rem; background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c !important; text-decoration: none; padding: .8rem 1.5rem; border-radius: 999px; font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5); transition: all .25s; }
     .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); }
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
-    .btn-delete-user {
-      background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff;
-      border: none; padding: .45rem .8rem; border-radius: 8px;
-      font-family: inherit; font-size: .75rem; font-weight: 700;
-      cursor: pointer; transition: .2s; flex: 1; min-width: 90px;
-    }
+    .btn-delete-user { background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff; border: none; padding: .45rem .8rem; border-radius: 8px; font-family: inherit; font-size: .75rem; font-weight: 700; cursor: pointer; transition: .2s; flex: 1; min-width: 90px; }
   </style>
 </head>
 <body>
 
   <header class="admin-header">
     <div class="admin-header-inner">
-      <a href="gallery.html" class="admin-logo-box">
-        <span class="logo-icon-sm">🎵</span>
-        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
-      </a>
+      <a href="gallery.html" class="admin-logo-box"><span class="logo-icon-sm">🎵</span><span class="logo-name-sm">Navaa<span class="dot">.</span></span></a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
-        <a href="gallery.html" class="admin-back-btn">
-          <span>رفتن به گالری</span>
-        </a>
+        <a href="gallery.html" class="admin-back-btn"><span>رفتن به گالری</span></a>
       </div>
     </div>
   </header>
@@ -74,7 +36,6 @@
     <h1 class="admin-title">🛡️ پنل مدیریت Navaa</h1>
     <p class="admin-sub">مدیریت کاربران، آثار، پرداخت‌ها و برداشت‌ها</p>
 
-    <!-- ✅ برگرداندن بخش آمار (که پاک شده بود) -->
     <div class="admin-stats">
       <div class="stat-box"><strong id="statUsers">0</strong><span>👥 کاربر</span></div>
       <div class="stat-box"><strong id="statAdmins">0</strong><span>🛡️ ادمین</span></div>
@@ -96,52 +57,19 @@
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
-    <section id="tab-items" class="admin-panel hidden">
-      <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
-      <div class="items-grid" id="adminItems"></div>
-    </section>
-
+    <section id="tab-items" class="admin-panel hidden"><div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div><div class="items-grid" id="adminItems"></div></section>
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
     <section id="tab-settings" class="admin-panel hidden">
       <div class="admin-section">
         <h3>⚙️ تنظیمات پلتفرم</h3>
-        <div style="margin-bottom:1rem;">
-          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label>
-          <input type="number" id="commissionInput" min="0" max="50" value="15" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;">
-        </div>
-        <div style="margin-bottom:1rem;">
-          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label>
-          <input type="number" id="maxPriceInput" min="10000" step="10000" value="500000" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;">
-        </div>
+        <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label><input type="number" id="commissionInput" min="0" max="50" value="15" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
+        <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label><input type="number" id="maxPriceInput" min="10000" step="10000" value="500000" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
         <button id="saveSettingsBtn" class="btn-primary" style="padding:.8rem 1.5rem;">💾 ذخیره</button>
       </div>
     </section>
   </main>
-
-  <div id="giftModal" class="modal hidden">
-    <div class="modal-content sub-content" style="max-width:900px;">
-      <button class="modal-close" id="giftClose">✕</button>
-      <div class="sub-icon" style="font-size:2.5rem;">🎁</div>
-      <h2>هدیه اشتراک</h2>
-      <p class="sub-desc">برای <strong id="giftUserName" style="color:#00f0d4;"></strong></p>
-      <div class="plans" style="margin-top:1rem;">
-        <div class="plan plan-bronze" data-plan="bronze" data-days="30">
-          <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
-          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
-        </div>
-        <div class="plan plan-silver" data-plan="silver" data-days="180">
-          <div class="plan-header"><span class="plan-name">🥈 طلایی</span><div class="plan-duration">۶ ماهه</div></div>
-          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
-        </div>
-        <div class="plan plan-diamond" data-plan="diamond" data-days="540">
-          <div class="plan-header"><span class="plan-name">💎 الماسی</span><div class="plan-duration">۱ سال و ۶ ماه</div></div>
-          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <nav class="bottom-nav" id="bottomNav"></nav>
 
@@ -149,18 +77,11 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ITEMS_KEY = 'navaa_items_v3';
-    const REQUESTS_KEY = 'navaa_payment_requests';
-    const WITHDRAW_KEY = 'navaa_withdraw_requests';
-    const SETTINGS_KEY = 'navaa_settings';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
     if (!currentUser) {
-      currentUser = {
-        id: 1, fullname: "مدیر", email: ADMIN_EMAIL, phone: "09120000000",
-        role: "admin", hasSubscription: true, subscriptionPlan: "diamond",
-        balance: 5000000, joinDate: Date.now(), banned: false
-      };
+      currentUser = { id: 1, fullname: "مدیر", email: ADMIN_EMAIL, phone: "09120000000", role: "admin", hasSubscription: true, subscriptionPlan: "diamond", balance: 5000000, joinDate: Date.now(), banned: false };
       localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
     }
 
@@ -171,22 +92,14 @@
     }
 
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
-
+    
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
-    function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
       document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
       document.getElementById('statItems').textContent = items.length;
-      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
-      const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
-      const pending = requests.filter(r => r.status === 'pending').length + withdraws.filter(w => w.status === 'pending').length;
-      document.getElementById('statPending').textContent = pending;
-      const admin = users.find(u => u.email === ADMIN_EMAIL);
-      document.getElementById('statCommission').textContent = formatMoney(admin?.totalCommission || 0);
     }
 
     function renderUsers(search = '') {
@@ -207,9 +120,7 @@
             <div class="user-avatar">${escapeHtml(getInitials(u.fullname))}</div>
             <div class="user-main">
               <h4>${escapeHtml(u.fullname)} ${isMe ? '<small style="color:#00f0d4;">(شما)</small>' : ''}</h4>
-              <div class="user-badges">
-                ${isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : '<span class="role-badge role-user">👤 کاربر</span>'}
-              </div>
+              <div class="user-badges">${isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : '<span class="role-badge role-user">👤 کاربر</span>'}</div>
             </div>
           </div>
           <div class="user-info-grid">
@@ -221,7 +132,6 @@
       });
     }
 
-    // ✅ تابع برای دریافت کاربران از سرور
     window.renderUsersFromCloud = function(cloudUsers) {
       let localUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       const merged = [...cloudUsers];
@@ -234,24 +144,13 @@
       updateStats();
     };
 
-    // ✅ برگرداندن نوار پایین (که پاک شده بود)
-    function renderBottomNav() {
-      const nav = document.getElementById('bottomNav'); if (!nav) return;
-      nav.innerHTML = `
-        <a href="home.html" class="nav-pill-btn"><span class="nav-pill-icon">🏠</span><span class="nav-pill-label">خانه</span></a>
-        <a href="gallery.html" class="nav-pill-btn"><span class="nav-pill-icon">🎨</span><span class="nav-pill-label">گالری</span></a>
-        <a href="admin.html" class="nav-pill-btn active"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیریت</span></a>
-        <button class="nav-pill-btn" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>`;
-      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
-    }
-
-    renderUsers(); updateStats(); renderBottomNav();
+    renderUsers(); updateStats();
   </script>
 
-  <!-- 🔥 اتصال با کانفیگ کامل و درست -->
+  <!-- 🔥 اتصال زنده به Firebase (onSnapshot) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -265,16 +164,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function fetchUsers() {
-      try {
-        const docSnap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
-        if (docSnap.exists()) {
-          const cloudUsers = JSON.parse(docSnap.data().value);
-          if (typeof window.renderUsersFromCloud === 'function') window.renderUsersFromCloud(cloudUsers);
+    // onSnapshot یعنی هر لحظه که کاربر جدیدی اضافه بشه، اینجا آپدیت میشه
+    onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudUsers = JSON.parse(docSnap.data().value);
+        if (typeof window.renderUsersFromCloud === 'function') {
+          window.renderUsersFromCloud(cloudUsers);
         }
-      } catch (e) { console.log('ارور در اتصال به سرور:', e); }
-    }
-    fetchUsers();
+      }
+    });
   </script>
 </body>
 </html>
