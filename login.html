@@ -175,6 +175,104 @@
         }
     }
     syncOnLoad();
+   <script>
+    const CURRENT_KEY = 'navaa_current_user';
+    const USERS_KEY = 'navaa_users';
+    const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
+
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      const tabBtn = document.querySelector(`.auth-tab[data-target="${tabName}"]`);
+      const form = document.getElementById(tabName === 'login' ? 'loginForm' : 'signupForm');
+      if (tabBtn) tabBtn.classList.add('active');
+      if (form) form.classList.add('active');
+    };
+
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => { e.preventDefault(); switchTab(tab.dataset.target); });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = e.target.email.value.trim().toLowerCase();
+      const password = e.target.password.value;
+
+      let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
+
+      if (!user) return alert('❌ ایمیل یا رمز عبور اشتباهه!');
+      if (user.banned === true) return alert('🚫 حساب شما مسدود شده!');
+
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+      window.location.href = 'gallery.html';
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = e.target.email.value.trim().toLowerCase();
+      const phone = e.target.phone.value.trim();
+      const fullname = e.target.fullname.value.trim();
+      const password = e.target.password.value;
+
+      let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+
+      if (users.find(u => (u.email || '').toLowerCase() === email)) return alert('❌ این ایمیل قبلاً ثبت‌نام کرده!');
+      if (phone && users.find(u => u.phone === phone)) return alert('❌ این شماره قبلا ثبت‌نام کرده!');
+
+      const isAdminSignup = email === ADMIN_EMAIL;
+      const newUser = {
+        id: Date.now(), fullname, phone: phone || null, email, password,
+        hasSubscription: isAdminSignup, subscriptionPlan: isAdminSignup ? 'diamond' : null,
+        subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
+        joinDate: Date.now(), role: isAdminSignup ? 'admin' : 'user',
+        balance: isAdminSignup ? 5000000 : 0, banned: false, purchasedItems: []
+      };
+
+      users.push(newUser);
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      
+      // ✅ ارسال به سرور با ارورگیری دقیق
+      try {
+        if (window.saveToCloud) {
+          await window.saveToCloud(USERS_KEY, JSON.stringify(users));
+          console.log('✅ اطلاعات کاربر روی سرور ذخیره شد.');
+        } else {
+          throw new Error("تابع اتصال به سرور لود نشده است!");
+        }
+      } catch (err) {
+        console.error(err);
+        alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message);
+        // برای اینکه کاربر گیر نکنه، به هر حال وارد سایت میشه
+      }
+      
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
+      alert('✨ حساب با موفقیت ساخته شد!');
+      window.location.href = 'gallery.html';
+    });
+    
+  </script>
+
+  <!-- 🔥 اتصال به Firebase با کانفیگ کامل -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveToCloud = async function(key, value) {
+      await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
+    };
   </script>
 </body>
 </html>
