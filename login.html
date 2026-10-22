@@ -68,6 +68,7 @@
     </form>
   </div>
 
+  <!-- ✅ کدهای اسکریپت اصلی -->
   <script>
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
@@ -108,7 +109,17 @@
       const fullname = e.target.fullname.value.trim();
       const password = e.target.password.value;
 
-      let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      // 🔥 اینجا لیست کاربرا رو از سرور می‌گیریم تا کاربرای قبلی پاک نشن
+      let users = [];
+      try {
+        if (window.getUsersFromCloud) {
+           users = await window.getUsersFromCloud();
+        } else {
+           users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+      } catch(err) {
+         users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      }
 
       if (users.find(u => (u.email || '').toLowerCase() === email)) return alert('❌ این ایمیل قبلاً ثبت‌نام کرده!');
       if (phone && users.find(u => u.phone === phone)) return alert('❌ این شماره قبلا ثبت‌نام کرده!');
@@ -125,11 +136,10 @@
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
-      // ✅ ارسال به سرور با ارورگیری دقیق
       try {
         if (window.saveToCloud) {
           await window.saveToCloud(USERS_KEY, JSON.stringify(users));
-          console.log('✅ اطلاعات کاربر روی سرور ذخیره شد.');
+          console.log('✅ کاربر با موفقیت روی سرور ذخیره شد');
         } else {
           throw new Error("تابع اتصال به سرور لود نشده است!");
         }
@@ -161,19 +171,26 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // تابع ذخیره
     window.saveToCloud = async function(key, value) {
       await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
     };
 
+    // تابع خوندن لیست کاربرا از سرور
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    // سینک اولیه موقع لود شدن صفحه
     async function syncOnLoad() {
         try {
             const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
             if (snap.exists()) {
                 localStorage.setItem('navaa_users', snap.data().value);
             }
-        } catch(e) {
-            console.error("خطا در سینک اولیه:", e);
-        }
+        } catch(e) { console.error("خطا در سینک اولیه:", e); }
     }
     syncOnLoad();
   </script>
