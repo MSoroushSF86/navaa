@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت | Navaa</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ============ هدر مخصوص ادمین ============ */
+    .admin-header {
+      position: relative;
+      background:
+        radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%),
+        radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%),
+        radial-gradient(ellipse at 100% 50%, rgba(255,46,77,.1), transparent 45%),
+        linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid rgba(0,240,212,.15);
+      z-index: 10;
+    }
+
+    .admin-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--turquoise) 25%, var(--sky) 50%, var(--gold) 75%, var(--red) 100%, transparent 100%);
+      box-shadow: 0 0 12px var(--turquoise);
+    }
+
+    .admin-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .admin-logo-box { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
+
+    .admin-badge-large {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1));
+      border: 1px solid rgba(255,201,60,.5); color: var(--gold);
+      padding: .5rem 1.1rem; border-radius: 999px;
+      font-size: .82rem; font-weight: 800;
+      box-shadow: 0 0 16px rgba(255,201,60,.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .admin-back-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      color: #001a1c !important; text-decoration: none;
+      padding: .8rem 1.5rem; border-radius: 999px;
+      font-size: .92rem; font-weight: 800;
+      box-shadow: 0 4px 20px rgba(0,240,212,.5);
+      transition: all .25s; position: relative; overflow: hidden;
+    }
+
+    .admin-back-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+      transform: translateX(-100%); transition: transform .6s;
+    }
+
+    .admin-back-btn:hover::before { transform: translateX(100%); }
+    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7), 0 0 60px rgba(56,189,248,.4); }
+    .admin-back-btn-icon { font-size: 1.2rem; transition: transform .3s; }
+    .admin-back-btn:hover .admin-back-btn-icon { transform: translateX(-4px) scale(1.15); }
+
+    .admin-main { padding-bottom: 120px !important; }
+    .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
+    .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
+
+    .btn-delete-user {
+      background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff;
+      border: none; padding: .45rem .8rem; border-radius: 8px;
+      font-family: inherit; font-size: .75rem; font-weight: 700;
+      cursor: pointer; transition: .2s; flex: 1; min-width: 90px;
+      box-shadow: 0 0 12px rgba(255,46,77,.4);
+    }
+    .btn-delete-user:hover { filter: brightness(1.15); transform: scale(1.02); box-shadow: 0 0 20px rgba(255,46,77,.7); }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <a href="gallery.html" class="admin-logo-box">
+        <span class="logo-icon-sm">🎵</span>
+        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
+      </a>
+      <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+        <span class="admin-badge-large">🛡️ پنل مدیریت</span>
+        <a href="gallery.html" class="admin-back-btn">
+          <span class="admin-back-btn-icon">🎨</span>
+          <span>رفتن به گالری</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <h1 class="admin-title">🛡️ پنل مدیریت Navaa</h1>
+    <p class="admin-sub">مدیریت کاربران، آثار، پرداخت‌ها و برداشت‌ها</p>
+
+    <div class="admin-stats">
+      <div class="stat-box"><strong id="statUsers">0</strong><span>👥 کاربر</span></div>
+      <div class="stat-box"><strong id="statAdmins">0</strong><span>🛡️ ادمین</span></div>
+      <div class="stat-box"><strong id="statItems">0</strong><span>🖼️ اثر</span></div>
+      <div class="stat-box"><strong id="statPending">0</strong><span>⏳ در انتظار</span></div>
+      <div class="stat-box"><strong id="statCommission">0</strong><span>💰 درآمد مدیر</span></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="users">👥 کاربران</button>
+      <button class="admin-tab" data-tab="items">🖼️ آثار</button>
+      <button class="admin-tab" data-tab="payments">💳 پرداخت‌ها</button>
+      <button class="admin-tab" data-tab="withdraws">💸 برداشت‌ها</button>
+      <button class="admin-tab" data-tab="settings">⚙️ تنظیمات</button>
+    </div>
+
+    <section id="tab-users" class="admin-panel">
+      <div class="admin-search"><input type="text" id="userSearch" placeholder="🔍 جستجو..."></div>
+      <div class="users-grid" id="usersGrid"></div>
+    </section>
+
+    <section id="tab-items" class="admin-panel hidden">
+      <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
+      <div class="items-grid" id="adminItems"></div>
+    </section>
+
+    <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
+    <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
+
+    <section id="tab-settings" class="admin-panel hidden">
+      <div class="admin-section">
+        <h3>⚙️ تنظیمات پلتفرم</h3>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label>
+          <input type="number" id="commissionInput" min="0" max="50" value="15" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label>
+          <input type="number" id="maxPriceInput" min="10000" step="10000" value="500000" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;">
+        </div>
+        <button id="saveSettingsBtn" class="btn-primary" style="padding:.8rem 1.5rem;">💾 ذخیره</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="giftModal" class="modal hidden">
+    <div class="modal-content sub-content" style="max-width:900px;">
+      <button class="modal-close" id="giftClose">✕</button>
+      <div class="sub-icon" style="font-size:2.5rem;">🎁</div>
+      <h2>هدیه اشتراک</h2>
+      <p class="sub-desc">برای <strong id="giftUserName" style="color:#00f0d4;"></strong></p>
+      <div class="plans" style="margin-top:1rem;">
+        <div class="plan plan-bronze" data-plan="bronze" data-days="30">
+          <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
+          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
+        </div>
+        <div class="plan plan-silver" data-plan="silver" data-days="180">
+          <div class="plan-header"><span class="plan-name">🥈 طلایی</span><div class="plan-duration">۶ ماهه</div></div>
+          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
+        </div>
+        <div class="plan plan-diamond" data-plan="diamond" data-days="540">
+          <div class="plan-header"><span class="plan-name">💎 الماسی</span><div class="plan-duration">۱ سال و ۶ ماه</div></div>
+          <button class="plan-btn" style="font-size:.8rem;padding:.6rem;">🎁 هدیه</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" id="bottomNav"></nav>
+
+  <!-- 🔥 اسکریپت اصلی (بدون import) -->
+  <script>
+    const CURRENT_KEY = 'navaa_current_user';
+    const USERS_KEY = 'navaa_users';
+    const ITEMS_KEY = 'navaa_items_v3';
+    const REQUESTS_KEY = 'navaa_payment_requests';
+    const WITHDRAW_KEY = 'navaa_withdraw_requests';
+    const SETTINGS_KEY = 'navaa_settings';
+    const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
+
+    let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
+    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
+
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
+      alert('⛔ دسترسی نداری!');
+      window.location.href = 'gallery.html';
+    }
+
+    const isSuperAdmin = currentUser.email === ADMIN_EMAIL;
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
+    function getInitials(name) {
+      if (!name) return '؟';
+      const parts = name.trim().split(' ');
+      return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0);
+    }
+
+    function saveUsers() {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      const meIdx = users.findIndex(u => u.id === currentUser.id);
+      if (meIdx !== -1) { currentUser = users[meIdx]; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
+    }
+    function saveItems() { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); }
+
+    (function setupSuperAdmin() {
+      const admin = users.find(u => u.email === ADMIN_EMAIL);
+      if (admin) {
+        let changed = false;
+        if (admin.role !== 'admin') { admin.role = 'admin'; changed = true; }
+        if (!admin.hasSubscription) { admin.hasSubscription = true; changed = true; }
+        if (admin.subscriptionPlan !== 'diamond') { admin.subscriptionPlan = 'diamond'; admin.subscriptionExpiry = Date.now() + (36500 * 24 * 60 * 60 * 1000); changed = true; }
+        if (!admin.balance) admin.balance = 5000000;
+        if (changed) saveUsers();
+      }
+    })();
+
+    function updateStats() {
+      document.getElementById('statUsers').textContent = users.length;
+      document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
+      document.getElementById('statItems').textContent = items.length;
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+      const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+      const pending = requests.filter(r => r.status === 'pending').length + withdraws.filter(w => w.status === 'pending').length;
+      document.getElementById('statPending').textContent = pending;
+      const admin = users.find(u => u.email === ADMIN_EMAIL);
+      document.getElementById('statCommission').textContent = formatMoney(admin?.totalCommission || 0);
+    }
+
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+        if (tab.dataset.tab === 'payments') renderPayments();
+        if (tab.dataset.tab === 'withdraws') renderWithdraws();
+        if (tab.dataset.tab === 'settings') renderSettings();
+      });
+    });
+
+    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
+    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
+
+    function renderUsers(search = '') {
+      const grid = document.getElementById('usersGrid');
+      grid.innerHTML = '';
+      let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
+      if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.phone || '').includes(search));
+      if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid">کاربری پیدا نشد</div>'; return; }
+
+      sorted.forEach((u) => {
+        const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
+        const isSuper = u.email === ADMIN_EMAIL;
+        const isMe = u.id === currentUser.id;
+        let roleBadge = '';
+        if (isSuper) roleBadge = '<span class="role-badge role-super">👑 مدیر کل</span>';
+        else if (isUserAdmin) roleBadge = '<span class="role-badge role-admin">🛡️ ادمین</span>';
+        else roleBadge = '<span class="role-badge role-user">👤 کاربر</span>';
+        let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
+
+        let actions = '';
+        if (isSuperAdmin && !isMe && !isSuper) {
+          if (isUserAdmin) actions += `<button class="btn-toggle admin-revoke" data-id="${u.id}">❌ حذف ادمین</button>`;
+          else actions += `<button class="btn-toggle admin-promote" data-id="${u.id}">🛡️ ادمین کن</button>`;
+        }
+        if (isSuperAdmin && !isSuper) actions += `<button class="btn-gift" data-id="${u.id}">🎁 هدیه</button>`;
+        if (isSuperAdmin && u.hasSubscription && !isSuper) actions += `<button class="btn-revoke-sub" data-id="${u.id}">🚫 لغو</button>`;
+        if (isSuperAdmin && !isMe && !isSuper) actions += `<button class="btn-delete-user" data-delete="${u.id}">🗑️ حذف کامل</button>`;
+        if (!actions) actions = '<span style="color:#555;font-size:.8rem;">—</span>';
+
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        card.innerHTML = `
+          <div class="user-card-head">
+            <div class="user-avatar">${escapeHtml(getInitials(u.fullname))}</div>
+            <div class="user-main">
+              <h4>${escapeHtml(u.fullname)} ${isMe ? '<small style="color:#00f0d4;">(شما)</small>' : ''}</h4>
+              <div class="user-badges">${roleBadge}${subBadge}</div>
+            </div>
+          </div>
+          <div class="user-info-grid">
+            <div class="info-cell"><span>📞 شماره</span><strong dir="ltr">${escapeHtml(u.phone || '—')}</strong></div>
+            <div class="info-cell"><span>📧 ایمیل</span><strong dir="ltr" style="font-size:.75rem;">${escapeHtml(u.email)}</strong></div>
+            <div class="info-cell"><span>💰 موجودی</span><strong style="color:#ffc93c;">${formatMoney(u.balance || 0)}</strong></div>
+            <div class="info-cell"><span>📅 عضویت</span><strong>${new Date(u.joinDate).toLocaleDateString('fa-IR')}</strong></div>
+          </div>
+          <div class="user-actions">${actions}</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll('.admin-promote').forEach(btn => btn.addEventListener('click', () => promoteAdmin(parseInt(btn.dataset.id))));
+      grid.querySelectorAll('.admin-revoke').forEach(btn => btn.addEventListener('click', () => revokeAdmin(parseInt(btn.dataset.id))));
+      grid.querySelectorAll('.btn-gift').forEach(btn => btn.addEventListener('click', () => openGiftModal(parseInt(btn.dataset.id))));
+      grid.querySelectorAll('.btn-revoke-sub').forEach(btn => btn.addEventListener('click', () => revokeSubscription(parseInt(btn.dataset.id))));
+      grid.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => deleteUser(parseInt(btn.dataset.delete))));
+    }
+
+    function deleteUser(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      if (user.email === ADMIN_EMAIL) return alert('❌ نمی‌تونی مدیر کل رو حذف کنی!');
+      if (user.id === currentUser.id) return alert('❌ نمی‌تونی خودت رو حذف کنی!');
+
+      const confirmText = prompt(`🗑️ حذف کامل «${user.fullname}»\n\n⚠️ همه اطلاعات پاک میشه!\nبرای تایید بنویس: DELETE`);
+      if (confirmText !== 'DELETE') { if (confirmText !== null) alert('❌ لغو شد!'); return; }
+
+      const userItemsCount = items.filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email).length;
+      users = users.filter(u => u.id !== id);
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      items = items.filter(i => i.uploadedBy !== id && i.uploadedByEmail !== user.email);
+      saveItems();
+      localStorage.removeItem('navaa_avatar_' + user.email);
+
+      alert(`✅ کاربر «${user.fullname}» کامل حذف شد!\n🗑️ ${userItemsCount} اثرش هم پاک شد`);
+      renderUsers(); renderItems(); updateStats();
+    }
+
+    function promoteAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🛡️ «${user.fullname}» ادمین بشه؟`)) return; user.role = 'admin'; user.hasSubscription = true; user.subscriptionPlan = 'bronze'; user.subscriptionExpiry = Date.now() + (30 * 24 * 60 * 60 * 1000); saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
+    function revokeAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`❌ از ادمینی مطمئنی؟`)) return; user.role = 'user'; user.hasSubscription = false; user.subscriptionPlan = null; user.subscriptionExpiry = null; saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
+    function revokeSubscription(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🚫 اشتراک لغو بشه؟`)) return; user.hasSubscription = false; user.subscriptionPlan = null; user.subscriptionExpiry = null; saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
+
+    let giftTargetId = null;
+    function openGiftModal(id) { const user = users.find(u => u.id === id); if (!user) return; giftTargetId = id; document.getElementById('giftUserName').textContent = user.fullname; document.getElementById('giftModal').classList.remove('hidden'); }
+    document.getElementById('giftClose').addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
+    document.getElementById('giftModal').addEventListener('click', (e) => { if (e.target.id === 'giftModal') { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; } });
+    document.querySelectorAll('#giftModal .plan').forEach(plan => {
+      plan.querySelector('.plan-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const planName = plan.dataset.plan, days = parseInt(plan.dataset.days);
+        const user = users.find(u => u.id === giftTargetId);
+        if (!user) return;
+        if (!confirm(`به «${user.fullname}» پلن ${planName} هدیه بدی؟`)) return;
+        user.hasSubscription = true; user.subscriptionPlan = planName; user.subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
+        saveUsers(); alert('🎁 هدیه داده شد!'); document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; renderUsers(); updateStats();
+      });
+    });
+
+    function renderItems(search = '') {
+      const adminItems = document.getElementById('adminItems');
+      let list = [...items].sort((a, b) => b.time - a.time);
+      if (search) list = list.filter(i => i.title.toLowerCase().includes(search) || (i.artist || '').toLowerCase().includes(search));
+      if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
+      adminItems.innerHTML = '';
+      list.forEach(item => {
+        const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
+        const uploaderName = uploader ? uploader.fullname : (item.artist || 'ناشناس');
+        const isPremium = item.isPremium && item.price > 0;
+        const card = document.createElement('div'); card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-thumb">
+            <img src="${item.image}" alt="" loading="lazy">
+            ${item.audio ? '<span class="item-audio-badge">🎵</span>' : ''}
+            ${isPremium ? `<span class="premium-badge" style="position:absolute;top:6px;left:6px;">💎 ${formatMoney(item.price)}</span>` : ''}
+            <button class="item-delete-btn" data-id="${item.id}" title="حذف">🗑️</button>
+          </div>
+          <div class="item-info">
+            <p class="item-title">${escapeHtml(item.title)}</p>
+            <p class="item-artist">👤 ${escapeHtml(uploaderName)}</p>
+            ${isPremium ? `<p class="item-artist" style="color:#ffc93c;">💰 ${item.purchases?.length || 0} خرید</p>` : ''}
+          </div>`;
+        card.querySelector('.item-delete-btn').addEventListener('click', (e) => { e.stopPropagation(); deleteItemAdmin(item.id); });
+        adminItems.appendChild(card);
+      });
+    }
+
+    function deleteItemAdmin(id) { const item = items.find(i => i.id === id); if (!item) return; if (!confirm(`🗑️ حذف «${item.title}»؟`)) return; items = items.filter(i => i.id !== id); saveItems(); alert('🗑️ حذف شد!'); renderItems(); updateStats(); }
+
+    function renderPayments() {
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], list = document.getElementById('paymentsList');
+      if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
+      list.innerHTML = '';
+      requests.sort((a,b) => b.time - a.time).forEach(req => {
+        const status = req.status, statusLabel = status === 'pending' ? '⏳ در انتظار' : status === 'approved' ? '✅ تایید' : '❌ رد';
+        const card = document.createElement('div'); card.className = 'user-card';
+        card.innerHTML = `
+          <div class="user-card-head"><div class="user-avatar">💳</div><div class="user-main"><h4>${escapeHtml(req.userName)}</h4><div class="user-badges"><span class="role-badge role-user">${statusLabel}</span><span class="badge-yes">${req.planLabel || req.planName}</span></div></div></div>
+          <div class="user-info-grid">
+            <div class="info-cell"><span>📧 ایمیل</span><strong style="font-size:.72rem;">${escapeHtml(req.userEmail)}</strong></div>
+            <div class="info-cell"><span>💰 مبلغ</span><strong style="color:#ffc93c;">${formatMoney(req.price)}</strong></div>
+            <div class="info-cell"><span>🔢 پیگیری</span><strong dir="ltr">${escapeHtml(req.trackingNumber)}</strong></div>
+            <div class="info-cell"><span>📅 تاریخ</span><strong>${new Date(req.time).toLocaleDateString('fa-IR')}</strong></div>
+          </div>
+          ${status === 'pending' ? `<div class="user-actions"><button class="btn-toggle admin-promote" data-approve="${req.id}">✅ تایید</button><button class="btn-toggle admin-revoke" data-reject="${req.id}">❌ رد</button></div>` : ''}`;
+        list.appendChild(card);
+      });
+      list.querySelectorAll('[data-approve]').forEach(btn => btn.addEventListener('click', () => approvePayment(parseInt(btn.dataset.approve))));
+      list.querySelectorAll('[data-reject]').forEach(btn => btn.addEventListener('click', () => rejectPayment(parseInt(btn.dataset.reject))));
+    }
+
+    function approvePayment(id) {
+      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], req = requests.find(r => r.id === id);
+      if (!req || req.status !== 'pending') return; if (!confirm(`✅ پرداخت ${formatMoney(req.price)} تایید بشه؟`)) return;
+      req.status = 'approved'; req.approvedAt = Date.now(); localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+      const userIdx = users.findIndex(u => u.email === req.userEmail);
+      if (userIdx !== -1) {
+        const expiryDate = Date.now() + (req.days * 24 * 60 * 60 * 1000);
+        users[userIdx].hasSubscription = true; users[userIdx].subscriptionPlan = req.planName; users[userIdx].subscriptionExpiry = expiryDate;
+        users[userIdx].subscriptionHistory = users[userIdx].subscriptionHistory || [];
+        users[userIdx].subscriptionHistory.push({ id: Date.now(), planName: req.planName, planLabel: req.planLabel || req.planName, price: req.price, days: req.days, method: 'card', trackingNumber: req.trackingNumber, time: Date.now(), expiryDate });
+        saveUsers();
+      }
+      alert('✅ تایید شد'); renderPayments(); updateStats();
+    }
+    function rejectPayment(id) { const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], req = requests.find(r => r.id === id); if (!req) return; if (!confirm('رد بشه؟')) return; req.status = 'rejected'; req.rejectedAt = Date.now(); localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests)); alert('❌ رد شد'); renderPayments(); updateStats(); }
+
+    function renderWithdraws() {
+      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], list = document.getElementById('withdrawsList');
+      if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
+      list.innerHTML = '';
+      requests.sort((a,b) => b.time - a.time).forEach(req => {
+        const status = req.status, statusLabel = status === 'pending' ? '⏳ در انتظار' : status === 'approved' ? '✅ پرداخت شده' : '❌ رد';
+        const card = document.createElement('div'); card.className = 'user-card';
+        card.innerHTML = `
+          <div class="user-card-head"><div class="user-avatar">💸</div><div class="user-main"><h4>${escapeHtml(req.userName)}</h4><div class="user-badges"><span class="role-badge role-user">${statusLabel}</span></div></div></div>
+          <div class="user-info-grid">
+            <div class="info-cell"><span>📧 ایمیل</span><strong style="font-size:.72rem;">${escapeHtml(req.userEmail)}</strong></div>
+            <div class="info-cell"><span>💰 مبلغ</span><strong style="color:#ffc93c;">${formatMoney(req.amount)}</strong></div>
+            <div class="info-cell"><span>💳 کارت</span><strong dir="ltr" style="font-size:.75rem;">${escapeHtml(req.cardNumber)}</strong></div>
+            <div class="info-cell"><span>📅 تاریخ</span><strong>${new Date(req.time).toLocaleDateString('fa-IR')}</strong></div>
+          </div>
+          ${status === 'pending' ? `<div class="user-actions"><button class="btn-toggle admin-promote" data-approve-w="${req.id}">✅ پرداخت شد</button><button class="btn-toggle admin-revoke" data-reject-w="${req.id}">❌ رد</button></div>` : ''}`;
+        list.appendChild(card);
+      });
+      list.querySelectorAll('[data-approve-w]').forEach(btn => btn.addEventListener('click', () => approveWithdraw(parseInt(btn.dataset.approveW))));
+      list.querySelectorAll('[data-reject-w]').forEach(btn => btn.addEventListener('click', () => rejectWithdraw(parseInt(btn.dataset.rejectW))));
+    }
+
+    function approveWithdraw(id) {
+      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], req = requests.find(r => r.id === id);
+      if (!req || req.status !== 'pending') return; if (!confirm(`✅ برداشت ${formatMoney(req.amount)} پرداخت شد؟`)) return;
+      req.status = 'approved'; req.approvedAt = Date.now(); localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
+      const userIdx = users.findIndex(u => u.email === req.userEmail);
+      if (userIdx !== -1) { users[userIdx].balance = Math.max(0, (users[userIdx].balance || 0) - req.amount); saveUsers(); }
+      alert('✅ انجام شد'); renderWithdraws(); updateStats();
+    }
+    function rejectWithdraw(id) { const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], req = requests.find(r => r.id === id); if (!req) return; if (!confirm('رد بشه؟')) return; req.status = 'rejected'; req.rejectedAt = Date.now(); localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests)); alert('❌ رد شد'); renderWithdraws(); updateStats(); }
+
+    function renderSettings() { document.getElementById('commissionInput').value = settings.commissionRate; document.getElementById('maxPriceInput').value = settings.maxItemPrice; }
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      const commission = parseInt(document.getElementById('commissionInput').value), maxPrice = parseInt(document.getElementById('maxPriceInput').value);
+      if (commission < 0 || commission > 50) return alert('❌ کمیسیون بین ۰ تا ۵۰!');
+      if (maxPrice < 10000) return alert('❌ حداکثر قیمت حداقل ۱۰,۰۰۰!');
+      settings.commissionRate = commission; settings.maxItemPrice = maxPrice; localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); alert('✅ ذخیره شد!');
+    });
+
+    function renderBottomNav() {
+      const nav = document.getElementById('bottomNav'); if (!nav) return;
+      const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
+      const isSuperUser = currentUser.email === ADMIN_EMAIL;
+      const subActive = currentUser.hasSubscription ? 'is-active' : '';
+      const adminActive = isAdminUser ? 'is-admin' : '';
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
+      if (!savedAvatar && currentUser.avatar) savedAvatar = currentUser.avatar;
+      const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
+      nav.innerHTML = `
+        <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
+        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn"><span class="nav-pill-icon">✨${currentUser.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span><span class="nav-pill-label">${currentUser.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span></button>
+        <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">${profileContent}<span class="nav-center-label">پروفایل</span></a>
+        ${isAdminUser ? `<button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">${isSuperUser ? 'مدیر کل' : 'ادمین'}</span></button>` : ''}
+        <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>`;
+      nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
+      nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
+      nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
+      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'index.html'; } });
+    }
+
+    // رندر اولیه
+    renderUsers(); renderItems(); updateStats(); renderBottomNav();
+  </script>
+
+  <!-- 🔥 اتصال به Firebase و به‌روزرسانی لحظه‌ای دیتا -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      projectId: "navaa-409cb"
+    });
+    const db = getFirestore(app);
+
+    // به جای رفرش کردن صفحه، فقط متغیرها رو آپدیت میکنیم
+    onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudUsers = JSON.parse(docSnap.data().value);
+        users.length = 0; 
+        users.push(...cloudUsers); 
+        
+        // رندر مجدد لیست بدون رفرش صفحه
+        if (typeof renderUsers === 'function') renderUsers();
+        if (typeof updateStats === 'function') updateStats();
+      }
+    });
+  </script>
+</body>
+</html>

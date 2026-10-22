@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پروفایل | Navaa</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-avatar-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 1rem; }
+    .profile-avatar {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 0 30px rgba(0,240,212,.5), 0 0 0 4px rgba(10,10,10,.8);
+      overflow: hidden; background-size: cover; background-position: center;
+      cursor: pointer; transition: transform .2s;
+    }
+    .profile-avatar:hover { transform: scale(1.03); }
+    .avatar-edit-btn {
+      position: absolute; bottom: 0; left: 0;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      color: #001a1c; border: 3px solid var(--black-2);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; transition: transform .2s;
+      box-shadow: 0 0 12px rgba(0,240,212,.6);
+    }
+    .avatar-edit-btn:hover { transform: scale(1.15); }
+    .admin-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), #e6a800);
+      color: #1a1100; font-size: .75rem; font-weight: 700;
+      padding: .25rem .8rem; border-radius: 999px;
+      margin-top: .3rem;
+      box-shadow: 0 0 12px rgba(255,201,60,.5);
+    }
+    .sub-status-active { color: var(--turquoise); font-weight: 700; }
+    .sub-status-inactive { color: var(--red); font-weight: 700; }
+
+    .profile-tabs {
+      display: flex; gap: .3rem;
+      background: var(--black-3);
+      padding: .3rem; border-radius: 999px;
+      margin: 1rem 0;
+    }
+    .profile-tab {
+      flex: 1; background: transparent; border: none;
+      color: var(--text-dim); padding: .6rem .5rem;
+      border-radius: 999px; cursor: pointer;
+      font-family: inherit; font-size: .85rem;
+      font-weight: 700; transition: .2s;
+    }
+    .profile-tab.active {
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      color: #001a1c;
+      box-shadow: 0 0 16px rgba(0,240,212,.4);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ============ اطلاعات ============ */
+    .profile-info { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--black-3); padding: .75rem .9rem;
+      border-radius: 10px; border: 1px solid var(--border);
+      font-size: .85rem; gap: .5rem;
+    }
+    .info-row span:first-child { color: var(--text-dim); font-size: .8rem; white-space: nowrap; }
+    .info-row strong { color: #fff; font-weight: 700; text-align: left; flex: 1; word-break: break-all; }
+    .edit-btn {
+      background: rgba(0,240,212,.15); border: 1px solid rgba(0,240,212,.4);
+      color: var(--turquoise); padding: .25rem .6rem; border-radius: 8px;
+      cursor: pointer; font-family: inherit; font-size: .7rem; font-weight: 700;
+      transition: .2s; white-space: nowrap;
+    }
+    .edit-btn:hover { background: rgba(0,240,212,.25); }
+
+    .profile-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
+      margin-top: 1rem;
+    }
+    .stat-box {
+      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
+      border: 1.5px solid rgba(0,240,212,.35);
+      border-radius: 14px; padding: 1rem;
+      text-align: center;
+    }
+    .stat-box strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--turquoise); }
+    .stat-box span { font-size: .75rem; color: var(--text-dim); }
+
+    /* ============ کیف پول ============ */
+    .wallet-card {
+      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
+      border: 1.5px solid rgba(0,240,212,.4);
+      border-radius: 16px; padding: 1.5rem 1.2rem;
+      text-align: center; margin-bottom: 1rem;
+      box-shadow: 0 0 24px rgba(0,240,212,.15);
+    }
+    .wallet-title { font-size: .9rem; color: #fff; font-weight: 700; margin-bottom: .8rem; }
+    .wallet-balance { display: flex; align-items: baseline; justify-content: center; gap: .4rem; margin-bottom: .6rem; }
+    .wallet-balance strong {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(90deg, var(--turquoise), var(--sky), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .wallet-balance span { color: var(--text-dim); font-size: .9rem; }
+    .wallet-hint { font-size: .75rem; color: var(--text-dim); margin-bottom: 1rem; }
+    .wallet-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
+    @media (max-width: 420px) { .wallet-actions-grid { grid-template-columns: 1fr; } }
+
+    .btn-transfer {
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      color: #001a1c; border: none; padding: .75rem 1.2rem; border-radius: 999px;
+      cursor: pointer; font-family: inherit; font-size: .88rem; font-weight: 800;
+      box-shadow: 0 4px 16px rgba(0,240,212,.4); transition: all .25s;
+    }
+    .btn-transfer:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,240,212,.6); filter: brightness(1.1); }
+    .btn-transfer:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+    .btn-withdraw {
+      background: linear-gradient(135deg, var(--gold), #ff8c00);
+      color: #1a1100; border: none; padding: .75rem 1.2rem; border-radius: 999px;
+      cursor: pointer; font-family: inherit; font-size: .88rem; font-weight: 800;
+      box-shadow: 0 4px 16px rgba(255,201,60,.4); transition: all .25s;
+    }
+    .btn-withdraw:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,201,60,.6); }
+    .btn-withdraw:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+    /* ============ آثار من ============ */
+    .my-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
+    @media (max-width: 420px) { .my-items-grid { grid-template-columns: 1fr; } }
+    .my-item {
+      background: var(--black-3); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; transition: .2s; position: relative;
+    }
+    .my-item:hover { border-color: var(--turquoise); box-shadow: 0 0 16px rgba(0,240,212,.2); transform: translateY(-2px); }
+    .my-item-thumb { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: var(--black-2); position: relative; }
+    .my-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .my-item-thumb .music-tag {
+      position: absolute; top: 6px; right: 6px;
+      background: linear-gradient(135deg, var(--gold), #e6a800); color: #1a1100;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: .65rem;
+      box-shadow: 0 0 8px rgba(255,201,60,.6);
+    }
+    .my-item-thumb .premium-tag {
+      position: absolute; top: 6px; left: 6px;
+      background: linear-gradient(135deg, #ffc93c, #ff8c00); color: #1a1100;
+      padding: .15rem .45rem; border-radius: 999px; font-size: .6rem; font-weight: 800;
+      box-shadow: 0 0 8px rgba(255,201,60,.6);
+    }
+    .my-item-del {
+      position: absolute; top: 6px; left: 6px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,46,77,.9); color: #fff; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: .7rem;
+      transition: .2s; box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      opacity: 0; transform: scale(.85); z-index: 3;
+    }
+    .my-item:hover .my-item-del { opacity: 1; transform: scale(1); }
+    .my-item-del:hover { background: var(--red); transform: scale(1.15) !important; }
+    .my-item-info { padding: .5rem .6rem; }
+    .my-item-title {
+      margin: 0 0 .2rem; font-size: .78rem; color: #fff; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .my-item-meta { margin: 0; font-size: .68rem; color: var(--text-dim); display: flex; justify-content: space-between; }
+    .my-item-revenue { font-size: .68rem; color: var(--gold); margin-top: .3rem; font-weight: 700; }
+
+    .no-items {
+      text-align: center; padding: 1.5rem 1rem; color: var(--text-dim); font-size: .85rem;
+      background: var(--black-3); border-radius: 12px; border: 1px dashed var(--border);
+    }
+
+    /* ============ خریدها/درآمدها ============ */
+    .purchase-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .7rem; background: var(--black-3); border-radius: 10px; margin-bottom: .5rem; font-size: .82rem;
+    }
+    .purchase-row strong { color: #fff; }
+    .purchase-row small { color: var(--text-dim); font-size: .7rem; display: block; margin-top: .2rem; }
+    .purchase-amount { color: var(--red); font-weight: 700; }
+    .earn-amount { color: var(--turquoise); font-weight: 700; }
+
+    .plan-limits-card {
+      background: linear-gradient(135deg,rgba(0,240,212,.08),rgba(56,189,248,.05));
+      border: 1.5px solid rgba(0,240,212,.4); border-radius: 16px;
+      padding: 1.2rem; text-align: right; margin-bottom: 1rem;
+    }
+    .plan-limits-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
+    .plan-limits-title { color: #fff; font-weight: 700; font-size: .9rem; }
+    .plan-badge-pill {
+      background: rgba(0,240,212,.15); color: #00f0d4;
+      padding: .2rem .7rem; border-radius: 999px;
+      font-size: .75rem; font-weight: 700;
+      border: 1px solid rgba(0,240,212,.3);
+    }
+    .limits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; font-size: .78rem; }
+    .limit-box { background: #1c1c1c; border-radius: 10px; padding: .6rem; }
+    .limit-box-label { color: #a0a0a0; font-size: .7rem; margin-bottom: .2rem; }
+    .limit-box-value { color: #ffc93c; font-weight: 800; }
+
+    /* ============ مودال انتقال ============ */
+    .transfer-modal-wrap {
+      position: fixed; inset: 0; background: rgba(0,0,0,.95); z-index: 300;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      backdrop-filter: blur(8px); overflow-y: auto;
+    }
+    .transfer-modal-card {
+      background: var(--black-2); border: 1.5px solid rgba(0,240,212,.4);
+      border-radius: 20px; padding: 1.8rem 1.5rem; max-width: 520px; width: 100%;
+      box-shadow: 0 0 60px rgba(0,240,212,.25), 0 20px 60px rgba(0,0,0,.8);
+      animation: popIn .3s ease-out;
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+    .transfer-modal-card h2 {
+      margin: 0 0 .3rem; font-size: 1.3rem; text-align: center;
+      background: linear-gradient(90deg, var(--turquoise), var(--sky));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; font-weight: 800;
+    }
+    .transfer-modal-card .transfer-sub { text-align: center; color: var(--text-dim); font-size: .85rem; margin: 0 0 1.2rem; }
+    .transfer-field { margin-bottom: 1rem; }
+    .transfer-field label { display: block; font-size: .82rem; color: #fff; font-weight: 700; margin-bottom: .4rem; }
+    .transfer-field input {
+      width: 100%; padding: .85rem 1rem; background: #0a0a0a;
+      border: 1.5px solid #2a2a2a; border-radius: 12px; color: #f0f0f0;
+      font-family: inherit; font-size: .95rem; outline: none; transition: all .25s;
+      direction: ltr; text-align: center;
+    }
+    .transfer-field input:focus { border-color: var(--turquoise); box-shadow: 0 0 0 3px rgba(0,240,212,.12); }
+    .transfer-field input::placeholder { color: #555; font-size: .85rem; }
+
+    .transfer-recipient-info {
+      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.04));
+      border: 1.5px solid rgba(0,240,212,.4); border-radius: 12px;
+      padding: .9rem 1rem; margin-bottom: 1rem; display: none;
+    }
+    .transfer-recipient-info.show { display: block; }
+    .transfer-recipient-info .info-row {
+      display: flex; justify-content: space-between; font-size: .82rem;
+      padding: .2rem 0; border: none; background: none;
+    }
+    .transfer-recipient-info .info-row span { color: var(--text-dim); font-size: .78rem; }
+    .transfer-recipient-info .info-row strong { color: #fff; }
+
+    .transfer-actions { display: flex; flex-direction: column; gap: .6rem; margin-top: 1rem; }
+    .transfer-actions .btn-primary { padding: .9rem; border-radius: 12px; font-size: .95rem; }
+    .transfer-actions .btn-cancel {
+      background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+      padding: .7rem; border-radius: 12px; cursor: pointer; font-family: inherit;
+      font-size: .85rem; font-weight: 600; transition: .2s;
+    }
+    .transfer-actions .btn-cancel:hover { border-color: var(--red); color: var(--red); }
+
+    .transfer-alert {
+      background: rgba(255,46,77,.1); border: 1px solid rgba(255,46,77,.4);
+      color: var(--red); padding: .6rem .9rem; border-radius: 10px;
+      font-size: .8rem; margin-bottom: .8rem; display: none;
+    }
+    .transfer-alert.show { display: block; }
+
+    .user-row {
+      display: flex; align-items: center; gap: .7rem; padding: .6rem .7rem;
+      border-radius: 8px; cursor: pointer; transition: all .15s; margin-bottom: .2rem;
+    }
+    .user-row:hover { background: rgba(0,240,212,.1); }
+
+    .subscription-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .8rem .9rem; background: var(--black-3);
+      border-radius: 10px; margin-bottom: .5rem; font-size: .82rem;
+      border-right: 3px solid var(--gold);
+    }
+    .subscription-row.wallet { border-right-color: var(--turquoise); }
+    .subscription-row.card { border-right-color: var(--gold); }
+    .subscription-row strong { color: #fff; }
+    .subscription-row small { color: var(--text-dim); font-size: .7rem; display: block; margin-top: .2rem; }
+    .subscription-badge {
+      display: inline-block; padding: .15rem .5rem; border-radius: 999px;
+      font-size: .65rem; font-weight: 700; margin-right: .3rem;
+    }
+    .badge-wallet { background: rgba(0,240,212,.15); color: var(--turquoise); border: 1px solid rgba(0,240,212,.3); }
+    .badge-card { background: rgba(255,201,60,.15); color: var(--gold); border: 1px solid rgba(255,201,60,.3); }
+
+    /* ============ دکمه گالری (استایل پنل مدیریت) ============ */
+    .profile-back-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky));
+      color: #001a1c !important; text-decoration: none;
+      padding: .65rem 1.2rem; border-radius: 999px;
+      font-size: .85rem; font-weight: 800;
+      box-shadow: 0 4px 20px rgba(0,240,212,.5);
+      transition: all .25s; position: relative; overflow: hidden;
+    }
+    .profile-back-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+      transform: translateX(-100%); transition: transform .6s;
+    }
+    .profile-back-btn:hover::before { transform: translateX(100%); }
+    .profile-back-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7), 0 0 60px rgba(56,189,248,.4);
+    }
+    .profile-back-btn-icon { font-size: 1.1rem; transition: transform .3s; }
+    .profile-back-btn:hover .profile-back-btn-icon { transform: translateX(-4px) scale(1.15); }
+
+    /* ============ دکمه حذف حساب ============ */
+    .btn-delete-account {
+      background: rgba(255, 46, 77, 0.1);
+      border: 1px solid rgba(255, 46, 77, 0.4);
+      color: var(--red);
+      padding: .8rem;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+      margin-top: .5rem;
+      width: 100%;
+    }
+    .btn-delete-account:hover {
+      background: rgba(255, 46, 77, 0.2);
+      border-color: var(--red);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="gallery.html" class="logo-small">
+        <span class="logo-icon-sm">🎵</span>
+        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
+      </a>
+      <div class="header-actions">
+        <a href="gallery.html" class="profile-back-btn">
+          <span class="profile-back-btn-icon">🎨</span>
+          <span>رفتن به گالری</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-main" style="max-width:520px;">
+    <div class="profile-card">
+
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="avatarBox">
+          <span id="avatarEmoji">👤</span>
+        </div>
+        <button class="avatar-edit-btn" id="avatarEditBtn">📷</button>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+      </div>
+
+      <h1 id="profileName">...</h1>
+      <p class="profile-email" id="profileEmail"></p>
+      <div id="adminBadgeBox"></div>
+
+      <div class="profile-tabs">
+        <button class="profile-tab active" data-tab="info">📋 اطلاعات</button>
+        <button class="profile-tab" data-tab="items">🎨 آثار من</button>
+        <button class="profile-tab" data-tab="wallet">💰 کیف پول</button>
+      </div>
+
+      <div class="tab-content active" id="tab-info">
+        <div class="profile-info" id="profileInfoBox"></div>
+
+        <div class="profile-stats">
+          <div class="stat-box"><strong id="myUploads">0</strong><span>آپلود</span></div>
+          <div class="stat-box"><strong id="myLikes">0</strong><span>لایک گرفته</span></div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-items">
+        <div class="my-items-grid" id="myItemsGrid"></div>
+      </div>
+
+      <div class="tab-content" id="tab-wallet">
+        <div class="wallet-card">
+          <div class="wallet-title">💰 موجودی کیف پول</div>
+          <div class="wallet-balance">
+            <strong id="walletBalance">۰</strong>
+            <span>تومان</span>
+          </div>
+          <div class="wallet-hint">هر آپلود ۵,۰۰۰ تومان اعتبار</div>
+          <div class="wallet-actions-grid">
+            <button id="transferBtn" class="btn-transfer">💸 انتقال وجه</button>
+            <button id="withdrawBtn" class="btn-withdraw">🏦 درخواست برداشت</button>
+          </div>
+        </div>
+
+        <h3 style="color:#fff;font-size:.9rem;margin:1.2rem 0 .6rem;">💎 تاریخچه اشتراک‌ها</h3>
+        <div id="subscriptionsList"></div>
+
+        <h3 style="color:#fff;font-size:.9rem;margin:1.2rem 0 .6rem;">💸 انتقال‌های اخیر</h3>
+        <div id="transfersList"></div>
+
+        <div class="plan-limits-card" style="margin-top:1.2rem;">
+          <div class="plan-limits-header">
+            <span class="plan-limits-title">📊 محدودیت‌های پلن</span>
+            <span class="plan-badge-pill" id="planBadge">—</span>
+          </div>
+          <div class="limits-grid">
+            <div class="limit-box">
+              <div class="limit-box-label">🖼️ حداکثر حجم عکس</div>
+              <strong class="limit-box-value" id="limitImageSize">—</strong>
+            </div>
+            <div class="limit-box">
+              <div class="limit-box-label">📅 آپلود امروز</div>
+              <strong class="limit-box-value" id="limitDailyCount">—</strong>
+            </div>
+            <div class="limit-box">
+              <div class="limit-box-label">💾 حجم امروز</div>
+              <strong class="limit-box-value" id="limitDailySize">—</strong>
+            </div>
+            <div class="limit-box">
+              <div class="limit-box-label">🎯 سقف روزانه</div>
+              <strong class="limit-box-value" id="limitMaxSize">—</strong>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color:#fff;font-size:.9rem;margin:1.2rem 0 .6rem;">📥 خریدهای من</h3>
+        <div id="purchasesList"></div>
+
+        <h3 style="color:#fff;font-size:.9rem;margin:1.2rem 0 .6rem;">📤 درآمدهای من</h3>
+        <div id="earningsList"></div>
+      </div>
+
+      <button id="renewSubBtn" class="btn-primary full" style="margin-top:1.2rem;">✨ تمدید / ارتقای اشتراک</button>
+      <button id="logoutBtn2" class="btn-ghost-sm full">🚪 خروج از حساب</button>
+      
+      <!-- 🗑️ دکمه حذف کامل حساب -->
+      <button id="deleteAccountBtn" class="btn-delete-account">🗑️ حذف کامل حساب کاربری</button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav"></nav>
+
+  <!-- ============ MODAL اشتراک ============ -->
+  <div id="subModal" class="modal hidden">
+    <div class="modal-content sub-content">
+      <button class="modal-close" id="subClose">✕</button>
+      <div class="sub-icon">✨</div>
+      <h2>پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
+
+      <div class="plans">
+        <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
+          <div class="plan-header">
+            <span class="plan-name">🥉 برنزی</span>
+            <div class="plan-duration">۱ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۲۰ عکس در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دریافت لایک</li>
+            <li>❌ آپلود موسیقی</li>
+            <li>❌ دانلود نامحدود</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="180">
+          <div class="plan-badge">🔥 پیشنهاد ویژه</div>
+          <div class="plan-header">
+            <span class="plan-name">🥈 طلایی</span>
+            <div class="plan-duration">۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۱۰۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۱۰۰ عکس در ماه</li>
+            <li>✅ آپلود ۵ آهنگ در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دانلود نامحدود عکس</li>
+            <li>❌ پخش بدون تبلیغ</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="540">
+          <div class="plan-header">
+            <span class="plan-name">💎 الماسی</span>
+            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۲۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود نامحدود عکس</li>
+            <li>✅ آپلود نامحدود موسیقی</li>
+            <li>✅ دانلود نامحدود</li>
+            <li>✅ نشان الماسی روی پروفایل</li>
+            <li>✅ پشتیبانی اولویت‌دار</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+      </div>
+
+      <p class="sub-hint">💳 پرداخت امن از طریق درگاه بانکی</p>
+    </div>
+  </div>
+
+  <script>
+  // ============================================================
+  // CONFIG
+  // ============================================================
+  const CURRENT_KEY = 'navaa_current_user';
+  const USERS_KEY = 'navaa_users';
+  const ITEMS_KEY = 'navaa_items_v3';
+  const PURCHASES_KEY = 'navaa_purchases';
+  const WITHDRAW_KEY = 'navaa_withdraw_requests';
+  const TRANSFERS_KEY = 'navaa_transfers';
+  const DAILY_LOG_KEY = 'navaa_daily_uploads';
+  const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
+  const MIN_TRANSFER = 1000;
+
+  let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  let user = JSON.parse(localStorage.getItem(CURRENT_KEY));
+
+  if (!user) {
+    window.location.href = 'login.html';
+  } else {
+    const _freshU = users.find(u => u.email === user.email);
+    if (_freshU && _freshU.banned === true) {
+      localStorage.removeItem(CURRENT_KEY);
+      alert(
+        '🚫 حساب شما مسدود شده!\n\n' +
+        (_freshU.bannedReason ? `دلیل: ${_freshU.bannedReason}\n\n` : '') +
+        'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.'
+      );
+      window.location.href = 'index.html';
+    } else if (user && user.email) {
+      const freshUser = users.find(u => u.email === user.email);
+      if (freshUser) {
+        user.id = freshUser.id;
+        user.role = freshUser.role;
+        user.hasSubscription = freshUser.hasSubscription;
+        user.subscriptionPlan = freshUser.subscriptionPlan;
+        user.subscriptionExpiry = freshUser.subscriptionExpiry;
+        user.balance = freshUser.balance || 0;
+        user.purchasedItems = freshUser.purchasedItems || [];
+        user.joinDate = freshUser.joinDate;
+
+        if (user.fullname) {
+          if (freshUser.fullname !== user.fullname) {
+            freshUser.fullname = user.fullname;
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          }
+        } else {
+          user.fullname = freshUser.fullname;
+        }
+
+        if (user.phone) {
+          if (freshUser.phone !== user.phone) {
+            freshUser.phone = user.phone;
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          }
+        } else {
+          user.phone = freshUser.phone;
+        }
+
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+      }
+    }
+  }
+
+  const isAdmin = user ? (user.email === ADMIN_EMAIL || user.role === 'admin') : false;
+  const isSuperAdmin = user ? (user.email === ADMIN_EMAIL) : false;
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+  function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
+
+  function formatLimitSize(bytes) {
+    if (bytes === Infinity) return '∞ نامحدود';
+    if (bytes >= 1024 * 1024 * 1024) return (bytes / 1024 / 1024 / 1024).toFixed(0) + ' گیگابایت';
+    if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(0) + ' مگابایت';
+    if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' کیلوبایت';
+    return bytes + ' بایت';
+  }
+
+  document.querySelectorAll('.profile-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ============================================================
+  // اطلاعات
+  // ============================================================
+  function renderInfo() {
+    if (!user) return;
+
+    document.getElementById('profileName').textContent = user.fullname || 'کاربر';
+    document.getElementById('profileEmail').textContent = user.email || '';
+
+    const subEl = document.getElementById('profileSub');
+    let subHtml = '';
+    if (user.hasSubscription) {
+      let label = '✅ فعال';
+      const plans = { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی', admin: '🛡️ ادمین' };
+      if (user.subscriptionPlan) label += ` — ${plans[user.subscriptionPlan] || ''}`;
+      if (user.subscriptionExpiry && user.subscriptionPlan !== 'admin') {
+        const expDate = new Date(user.subscriptionExpiry);
+        const daysLeft = Math.ceil((expDate - Date.now()) / (1000 * 60 * 60 * 24));
+        label += `<br><small style="color:#a0a0a0;font-size:.75rem;">تا ${expDate.toLocaleDateString('fa-IR')} (${daysLeft} روز)</small>`;
+      }
+      if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
+      subHtml = `<span class="sub-status-active">${label}</span>`;
+    } else {
+      subHtml = '<span class="sub-status-inactive">❌ غیرفعال</span>';
+    }
+
+    if (isAdmin) {
+      document.getElementById('adminBadgeBox').innerHTML = '<span class="admin-badge">🛡️ مدیر سایت</span>';
+    } else {
+      document.getElementById('adminBadgeBox').innerHTML = '';
+    }
+
+    const box = document.getElementById('profileInfoBox');
+    if (!box) return;
+    box.innerHTML = `
+      <div class="info-row">
+        <span>👤 نام:</span>
+        <strong>${escapeHtml(user.fullname || '—')}</strong>
+        <button class="edit-btn" onclick="editField('fullname')">✏️</button>
+      </div>
+      <div class="info-row">
+        <span>📞 شماره تماس:</span>
+        <strong style="direction:ltr;">${escapeHtml(user.phone || '—')}</strong>
+        <button class="edit-btn" onclick="editField('phone')">✏️</button>
+      </div>
+      <div class="info-row">
+        <span>📧 ایمیل:</span>
+        <strong style="direction:ltr;font-size:.75rem;">${escapeHtml(user.email || '')}</strong>
+        <button class="edit-btn" onclick="editField('email')">✏️</button>
+      </div>
+      <div class="info-row">
+        <span>📅 تاریخ عضویت:</span>
+        <strong>${new Date(user.joinDate || Date.now()).toLocaleDateString('fa-IR')}</strong>
+      </div>
+      <div class="info-row">
+        <span>💎 اشتراک:</span>
+        <strong>${subHtml}</strong>
+      </div>
+    `;
+  }
+
+  window.editField = function(field) {
+    if (!user) return;
+    const labels = { email: 'ایمیل', phone: 'شماره تماس', fullname: 'نام' };
+    const newValue = prompt(`📝 ${labels[field]} جدید:`);
+    if (!newValue || !newValue.trim()) return;
+    const val = newValue.trim();
+
+    if (field === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return alert('❌ ایمیل معتبر نیست!');
+      if (users.find(u => u.email === val.toLowerCase() && u.email !== user.email))
+        return alert('❌ این ایمیل استفاده شده!');
+    } else if (field === 'phone') {
+      if (!/^09\d{9}$/.test(val)) return alert('❌ شماره ۱۱ رقم با ۰۹!');
+      if (users.find(u => u.phone === val && u.email !== user.email))
+        return alert('❌ این شماره استفاده شده!');
+    } else if (field === 'fullname') {
+      if (val.length < 3) return alert('❌ نام حداقل ۳ کاراکتر!');
+    }
+
+    const oldEmail = user.email;
+    const newEmail = field === 'email' ? val.toLowerCase() : user.email;
+    const newVal = field === 'email' ? val.toLowerCase() : val;
+
+    let idx = users.findIndex(u => u.email === oldEmail);
+    if (idx === -1) { users.push(user); idx = users.length - 1; }
+
+    users[idx][field] = newVal;
+    if (field === 'email') users[idx].email = newEmail;
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+    user[field] = newVal;
+    localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+    if (field === 'email' && oldEmail !== newEmail) {
+      const oldAvatarKey = 'navaa_avatar_' + oldEmail;
+      const newAvatarKey = 'navaa_avatar_' + newEmail;
+      const avatarData = localStorage.getItem(oldAvatarKey);
+      if (avatarData) {
+        localStorage.setItem(newAvatarKey, avatarData);
+        localStorage.removeItem(oldAvatarKey);
+      }
+    }
+
+    users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    user = JSON.parse(localStorage.getItem(CURRENT_KEY));
+
+    alert('✅ به‌روزرسانی شد!');
+    renderInfo();
+    renderBottomNav();
+    loadAvatar();
+  };
+
+  // ============================================================
+  // آواتار
+  // ============================================================
+  const avatarBox = document.getElementById('avatarBox');
+  const avatarEmoji = document.getElementById('avatarEmoji');
+  const avatarInput = document.getElementById('avatarInput');
+
+  function getAvatarKey() { return 'navaa_avatar_' + (user ? user.email : ''); }
+
+  function loadAvatar() {
+    if (!user) return;
+    const key = getAvatarKey();
+    let savedAvatar = localStorage.getItem(key);
+    if (!savedAvatar && user.avatar) savedAvatar = user.avatar;
+
+    if (savedAvatar) {
+      avatarBox.style.backgroundImage = `url(${savedAvatar})`;
+      avatarEmoji.style.display = 'none';
+    } else {
+      avatarBox.style.backgroundImage = '';
+      avatarEmoji.style.display = 'block';
+    }
+  }
+
+  loadAvatar();
+
+  document.getElementById('avatarEditBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    avatarInput.click();
+  });
+  avatarBox.addEventListener('click', () => avatarInput.click());
+
+  avatarInput.addEventListener('change', e => {
+    if (!user) return;
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert('⚠️ حجم عکس باید کمتر از ۲ مگابایت باشه!');
+      avatarInput.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const imgData = ev.target.result;
+      const key = getAvatarKey();
+
+      try {
+        localStorage.setItem(key, imgData);
+
+        let idx = users.findIndex(u => u.email === user.email);
+        if (idx !== -1) {
+          users[idx].avatar = imgData;
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+
+        user.avatar = imgData;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+        loadAvatar();
+        alert('✅ عکس پروفایل ذخیره شد!');
+      } catch (err) {
+        console.error('خطا:', err);
+        alert('❌ خطا در ذخیره‌سازی!\nحجم عکس کمتر باشه یا یه عکس دیگه انتخاب کن.');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ============================================================
+  // آثار من
+  // ============================================================
+  function renderMyItems() {
+    if (!user) return;
+    const items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    const myItems = items
+      .filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email)
+      .sort((a, b) => b.time - a.time);
+
+    document.getElementById('myUploads').textContent = myItems.length;
+    document.getElementById('myLikes').textContent = myItems.reduce((s, i) => s + (i.likes || 0), 0);
+
+    const grid = document.getElementById('myItemsGrid');
+    if (myItems.length === 0) {
+      grid.innerHTML = `<div class="no-items" style="grid-column:1/-1;">🎭 هنوز اثری آپلود نکردی</div>`;
+      return;
+    }
+
+    grid.innerHTML = '';
+    myItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'my-item';
+      const isPremium = item.isPremium && item.price > 0;
+      card.innerHTML = `
+        <div class="my-item-thumb">
+          <img src="${item.image}" alt="" loading="lazy">
+          ${item.audio ? '<span class="music-tag">🎵</span>' : ''}
+          ${isPremium ? '<span class="premium-tag">💎 ویژه</span>' : ''}
+          <button class="my-item-del" data-id="${item.id}" title="حذف">🗑️</button>
+        </div>
+        <div class="my-item-info">
+          <p class="my-item-title">${escapeHtml(item.title)}</p>
+          <p class="my-item-meta">
+            <span>❤️ ${item.likes || 0}</span>
+            <span>${new Date(item.time).toLocaleDateString('fa-IR')}</span>
+          </p>
+          ${isPremium ? `<p class="my-item-revenue">💰 ${formatMoney(item.price)} تومان${item.purchases?.length ? ` • ${item.purchases.length} خرید` : ''}</p>` : ''}
+        </div>`;
+      card.querySelector('.my-item-thumb').addEventListener('click', e => {
+        if (e.target.closest('.my-item-del')) return;
+        window.location.href = 'gallery.html';
+      });
+      card.querySelector('.my-item-del').addEventListener('click', e => {
+        e.stopPropagation();
+        deleteMyItem(item.id);
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  function deleteMyItem(id) {
+    if (!user) return;
+    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    const isMine = item.uploadedBy === user.id || item.uploadedByEmail === user.email;
+    if (!isMine && !isAdmin) return alert('❌ دسترسی نداری!');
+    if (!confirm(`🗑️ حذف «${item.title}»؟`)) return;
+    items = items.filter(i => i.id !== id);
+    localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+    alert('🗑️ حذف شد!');
+    renderMyItems();
+    renderWallet();
+  }
+
+  // ============================================================
+  // تاریخچه اشتراک‌ها
+  // ============================================================
+  function renderSubscriptions() {
+    if (!user) return;
+    const list = document.getElementById('subscriptionsList');
+    if (!list) return;
+
+    const freshUser = users.find(u => u.email === user.email);
+    const history = (freshUser?.subscriptionHistory || []).sort((a, b) => b.time - a.time);
+
+    if (history.length === 0) {
+      list.innerHTML = '<div class="no-items">هنوز اشتراکی نخریدی</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    history.forEach(h => {
+      const isWallet = h.method === 'wallet';
+      const row = document.createElement('div');
+      row.className = 'subscription-row ' + (isWallet ? 'wallet' : 'card');
+
+      const badgeClass = isWallet ? 'badge-wallet' : 'badge-card';
+      const methodIcon = isWallet ? '💰' : '🏦';
+      const methodText = isWallet ? 'کیف پول' : 'کارت به کارت';
+
+      const planLabel = h.planLabel || h.planName || 'اشتراک';
+
+      row.innerHTML = `
+        <div>
+          <strong>${escapeHtml(planLabel)}</strong>
+          <small>
+            <span class="subscription-badge ${badgeClass}">${methodIcon} ${methodText}</span>
+            ${new Date(h.time).toLocaleDateString('fa-IR')}
+          </small>
+        </div>
+        <span class="purchase-amount">-${formatMoney(h.price || 0)}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ============================================================
+  // کیف پول
+  // ============================================================
+  function renderWallet() {
+    if (!user) return;
+    document.getElementById('walletBalance').textContent = formatMoney(user.balance || 0);
+
+    const purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
+    const myPurchases = purchases.filter(p => p.buyerEmail === user.email).sort((a,b) => b.time - a.time);
+    const purchasesList = document.getElementById('purchasesList');
+
+    if (myPurchases.length === 0) {
+      purchasesList.innerHTML = '<div class="no-items">هنوز چیزی نخریدی</div>';
+    } else {
+      purchasesList.innerHTML = '';
+      myPurchases.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'purchase-row';
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(p.itemTitle)}</strong>
+            <small>${new Date(p.time).toLocaleDateString('fa-IR')}</small>
+          </div>
+          <span class="purchase-amount">-${formatMoney(p.price)}</span>`;
+        purchasesList.appendChild(row);
+      });
+    }
+
+    const earnings = purchases.filter(p => p.sellerEmail === user.email).sort((a,b) => b.time - a.time);
+    const earningsList = document.getElementById('earningsList');
+
+    if (earnings.length === 0) {
+      earningsList.innerHTML = '<div class="no-items">هنوز درآمدی نداری</div>';
+    } else {
+      earningsList.innerHTML = '';
+      earnings.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'purchase-row';
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(p.itemTitle)}</strong>
+            <small>خریدار: ${escapeHtml(p.buyerEmail)}</small>
+          </div>
+          <span class="earn-amount">+${formatMoney(p.creatorShare)}</span>`;
+        earningsList.appendChild(row);
+      });
+    }
+
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const balance = user.balance || 0;
+    const minWithdraw = isAdmin ? 1000 : 50000;
+    const canWithdraw = balance >= minWithdraw;
+
+    withdrawBtn.disabled = !canWithdraw;
+    withdrawBtn.textContent = canWithdraw
+      ? `🏦 برداشت${isAdmin ? ' (≥۱,۰۰۰)' : ''}`
+      : `🏦 حداقل ${formatMoney(minWithdraw)} (${formatMoney(balance)})`;
+
+    const transferBtn = document.getElementById('transferBtn');
+    if (transferBtn) {
+      const canTransfer = balance >= MIN_TRANSFER;
+      transferBtn.disabled = !canTransfer;
+      transferBtn.textContent = canTransfer
+        ? '💸 انتقال وجه'
+        : `💸 حداقل ${formatMoney(MIN_TRANSFER)}`;
+    }
+  }
+
+  // ============================================================
+  // 💸 انتقال وجه
+  // ============================================================
+  function getRecipientByIdentifier(identifier) {
+    const id = identifier.trim().toLowerCase();
+    let found = users.find(u => (u.email || '').toLowerCase() === id);
+    if (found) return found;
+    const phoneClean = id.replace(/\D/g, '');
+    if (phoneClean.length >= 10) {
+      found = users.find(u => u.phone && u.phone.replace(/\D/g, '') === phoneClean);
+      if (found) return found;
+    }
+    found = users.find(u => (u.email || '').split('@')[0].toLowerCase() === id);
+    return found || null;
+  }
+
+  function openTransferModal() {
+    if (!user) return;
+    const balance = user.balance || 0;
+    if (balance < MIN_TRANSFER) {
+      alert(`❌ حداقل موجودی برای انتقال ${formatMoney(MIN_TRANSFER)} تومان است!`);
+      return;
+    }
+
+    const transferableUsers = users
+      .filter(u => u.email !== user.email)
+      .filter(u => u.email && u.email !== 'system')
+      .sort((a, b) => {
+        const aIsAdmin = a.email === ADMIN_EMAIL || a.role === 'admin';
+        const bIsAdmin = b.email === ADMIN_EMAIL || b.role === 'admin';
+        if (aIsAdmin && !bIsAdmin) return -1;
+        if (!aIsAdmin && bIsAdmin) return 1;
+        return (a.fullname || '').localeCompare(b.fullname || '', 'fa');
+      });
+
+    const overlay = document.createElement('div');
+    overlay.className = 'transfer-modal-wrap';
+    overlay.innerHTML = `
+      <div class="transfer-modal-card">
+        <h2>💸 انتقال وجه</h2>
+        <p class="transfer-sub">به شناسه کاربری (ایمیل یا شماره تماس)</p>
+
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:.82rem;color:#fff;font-weight:700;margin-bottom:.5rem;">
+            👥 لیست کاربران (${transferableUsers.length}):
+          </label>
+
+          <input type="text" id="userSearch" placeholder="🔍 جستجو در اسم، ایمیل یا شماره..."
+            style="
+              width:100%;padding:.7rem 1rem;
+              background:#0a0a0a;border:1.5px solid #2a2a2a;
+              border-radius:10px;color:#f0f0f0;font-family:inherit;
+              font-size:.85rem;outline:none;margin-bottom:.6rem;
+              text-align:right;direction:rtl;
+            ">
+
+          <div id="usersList" style="
+            max-height:220px;overflow-y:auto;
+            background:#0a0a0a;border:1.5px solid #2a2a2a;
+            border-radius:12px;padding:.4rem;
+          ">
+            ${transferableUsers.length === 0 
+              ? '<div style="text-align:center;padding:1.5rem;color:#666;font-size:.85rem;">کاربری برای انتقال نیست</div>'
+              : transferableUsers.map(u => {
+                const avatarKey = 'navaa_avatar_' + u.email;
+                const avatar = localStorage.getItem(avatarKey) || u.avatar;
+                const initial = (u.fullname || '؟').charAt(0).toUpperCase();
+                const isAdminUser = u.email === ADMIN_EMAIL || u.role === 'admin';
+                return `
+                  <div class="user-row" data-email="${escapeHtml(u.email)}" data-phone="${escapeHtml(u.phone || '')}" data-name="${escapeHtml(u.fullname || '')}">
+                    <div style="
+                      width:38px;height:38px;border-radius:50%;
+                      background: ${avatar ? `url('${avatar}')` : 'linear-gradient(135deg,#00f0d4,#38bdf8)'};
+                      background-size:cover;background-position:center;
+                      display:flex;align-items:center;justify-content:center;
+                      color:#001a1c;font-weight:800;font-size:.9rem;
+                      flex-shrink:0;
+                      box-shadow:0 0 0 2px rgba(0,240,212,.3);
+                    ">${avatar ? '' : initial}</div>
+
+                    <div style="flex:1;min-width:0;text-align:right;">
+                      <div style="display:flex;align-items:center;gap:.3rem;justify-content:flex-end;">
+                        ${isAdminUser ? '<span style="font-size:.7rem;">👑</span>' : ''}
+                        <strong style="color:#fff;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                          ${escapeHtml(u.fullname || 'کاربر')}
+                        </strong>
+                      </div>
+                      <div style="color:#a0a0a0;font-size:.72rem;direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${escapeHtml(u.email)}
+                      </div>
+                      ${u.phone ? `<div style="color:#666;font-size:.68rem;direction:ltr;text-align:right;">${escapeHtml(u.phone)}</div>` : ''}
+                    </div>
+
+                    <div style="font-size:1.1rem;opacity:.5;">↩️</div>
+                  </div>
+                `;
+              }).join('')
+            }
+          </div>
+        </div>
+
+        <div class="transfer-field">
+          <label>🔍 شناسه گیرنده:</label>
+          <input type="text" id="transferRecipient" placeholder="email@example.com یا شماره تماس" autocomplete="off">
+        </div>
+
+        <div class="transfer-recipient-info" id="transferRecipientInfo"></div>
+        <div class="transfer-alert" id="transferAlert"></div>
+
+        <div class="transfer-field">
+          <label>💰 مبلغ (تومان):</label>
+          <input type="number" id="transferAmount" placeholder="حداقل ۱,۰۰۰" min="${MIN_TRANSFER}" max="${balance}">
+        </div>
+
+        <div style="background:#1c1c1c;border-radius:10px;padding:.7rem .9rem;font-size:.75rem;color:#a0a0a0;text-align:center;">
+          💰 موجودی تو: <strong style="color:#ffc93c;">${formatMoney(balance)}</strong> تومان
+        </div>
+
+        <div class="transfer-actions">
+          <button class="btn-primary" id="transferConfirm">✅ تایید و انتقال</button>
+          <button class="btn-cancel" id="transferCancel">انصراف</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const recipientInput = overlay.querySelector('#transferRecipient');
+    const amountInput = overlay.querySelector('#transferAmount');
+    const infoBox = overlay.querySelector('#transferRecipientInfo');
+    const alertBox = overlay.querySelector('#transferAlert');
+    const usersList = overlay.querySelector('#usersList');
+    const userSearch = overlay.querySelector('#userSearch');
+
+    let foundRecipient = null;
+
+    function showAlert(msg) {
+      alertBox.textContent = msg;
+      alertBox.classList.add('show');
+    }
+    function hideAlert() { alertBox.classList.remove('show'); }
+
+    function filterUsers(query) {
+      const q = (query || '').trim().toLowerCase();
+      const rows = usersList.querySelectorAll('.user-row');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const email = (row.dataset.email || '').toLowerCase();
+        const phone = (row.dataset.phone || '').toLowerCase();
+        const name = (row.dataset.name || '').toLowerCase();
+
+        const matches = !q || 
+          email.includes(q) || 
+          phone.includes(q) || 
+          name.includes(q);
+
+        if (matches) {
+          row.style.display = 'flex';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const existingEmpty = usersList.querySelector('.empty-result');
+      if (visibleCount === 0 && q) {
+        if (!existingEmpty) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-result';
+          empty.style.cssText = 'text-align:center;padding:1rem;color:#666;font-size:.82rem;';
+          empty.textContent = 'کاربری پیدا نشد';
+          usersList.appendChild(empty);
+        }
+      } else if (existingEmpty) {
+        existingEmpty.remove();
+      }
+    }
+
+    usersList.addEventListener('click', e => {
+      const row = e.target.closest('.user-row');
+      if (!row) return;
+
+      const email = row.dataset.email;
+      recipientInput.value = email;
+      recipientInput.dispatchEvent(new Event('input'));
+      
+      setTimeout(() => {
+        recipientInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    });
+
+    userSearch.addEventListener('input', e => {
+      filterUsers(e.target.value);
+    });
+
+    recipientInput.addEventListener('input', () => {
+      hideAlert();
+      const val = recipientInput.value.trim();
+      if (!val || val.length < 3) {
+        infoBox.classList.remove('show');
+        foundRecipient = null;
+        return;
+      }
+      const found = getRecipientByIdentifier(val);
+      if (!found) {
+        infoBox.classList.remove('show');
+        foundRecipient = null;
+        return;
+      }
+      if (found.email === user.email) {
+        foundRecipient = null;
+        infoBox.classList.remove('show');
+        showAlert('❌ نمی‌تونی به خودت انتقال بدی!');
+        return;
+      }
+      foundRecipient = found;
+      infoBox.classList.add('show');
+      infoBox.innerHTML = `
+        <div class="info-row"><span>👤 نام:</span><strong>${escapeHtml(found.fullname || 'کاربر')}</strong></div>
+        <div class="info-row"><span>📧 ایمیل:</span><strong style="direction:ltr;font-size:.75rem;">${escapeHtml(found.email)}</strong></div>
+        ${found.phone ? `<div class="info-row"><span>📞 شماره:</span><strong style="direction:ltr;font-size:.75rem;">${escapeHtml(found.phone)}</strong></div>` : ''}
+        <div class="info-row"><span>✅ وضعیت:</span><strong style="color:#00f0d4;">پیدا شد</strong></div>
+      `;
+    });
+
+    amountInput.addEventListener('input', () => {
+      hideAlert();
+      const val = parseInt(amountInput.value) || 0;
+      if (val > balance) amountInput.value = balance;
+    });
+
+    overlay.querySelector('#transferConfirm').addEventListener('click', () => {
+      hideAlert();
+      if (!foundRecipient) { showAlert('❌ اول شناسه گیرنده رو وارد کن یا از لیست انتخاب کن!'); return; }
+
+      const amount = parseInt(amountInput.value);
+      if (isNaN(amount) || amount < MIN_TRANSFER) { showAlert(`❌ حداقل مبلغ ${formatMoney(MIN_TRANSFER)} تومان!`); return; }
+      if (amount > balance) { showAlert(`❌ موجودی کافی نداری!`); return; }
+
+      if (!confirm(`💸 تایید انتقال\n\n👤 گیرنده: ${foundRecipient.fullname}\n💰 مبلغ: ${formatMoney(amount)} تومان\n\nمطمئنی؟`)) return;
+
+      const freshUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      const senderIdx = freshUsers.findIndex(u => u.email === user.email);
+      const recipientIdx = freshUsers.findIndex(u => u.email === foundRecipient.email);
+
+      if (senderIdx === -1 || recipientIdx === -1) { showAlert('❌ خطا در پیدا کردن حساب!'); return; }
+      if ((freshUsers[senderIdx].balance || 0) < amount) { showAlert('❌ موجودی کافی نداری!'); return; }
+
+      freshUsers[senderIdx].balance = (freshUsers[senderIdx].balance || 0) - amount;
+      freshUsers[recipientIdx].balance = (freshUsers[recipientIdx].balance || 0) + amount;
+      localStorage.setItem(USERS_KEY, JSON.stringify(freshUsers));
+
+      const transfers = JSON.parse(localStorage.getItem(TRANSFERS_KEY)) || [];
+      transfers.push({
+        id: Date.now(),
+        fromEmail: user.email,
+        fromName: user.fullname,
+        toEmail: foundRecipient.email,
+        toName: foundRecipient.fullname,
+        amount,
+        time: Date.now()
+      });
+      localStorage.setItem(TRANSFERS_KEY, JSON.stringify(transfers));
+
+      user.balance = freshUsers[senderIdx].balance;
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+      users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+
+      document.body.removeChild(overlay);
+      alert(`✅ انتقال موفق!\n\n💰 ${formatMoney(amount)} تومان به ${foundRecipient.fullname} انتقال یافت.`);
+      renderWallet();
+      renderTransfers();
+    });
+
+    overlay.querySelector('#transferCancel').addEventListener('click', () => {
+      document.body.removeChild(overlay);
+    });
+  }
+
+  // ============================================================
+  // تاریخچه انتقال‌ها
+  // ============================================================
+  function renderTransfers() {
+    if (!user) return;
+    const list = document.getElementById('transfersList');
+    if (!list) return;
+
+    const transfers = JSON.parse(localStorage.getItem(TRANSFERS_KEY)) || [];
+    const myTransfers = transfers
+      .filter(t => t.fromEmail === user.email || t.toEmail === user.email)
+      .sort((a, b) => b.time - a.time)
+      .slice(0, 10);
+
+    if (myTransfers.length === 0) {
+      list.innerHTML = '<div class="no-items">هنوز انتقالی نداری</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    myTransfers.forEach(t => {
+      const isSender = t.fromEmail === user.email;
+      const otherName = isSender ? t.toName : t.fromName;
+      const icon = isSender ? '📤' : '📥';
+      const arrow = isSender ? 'به' : 'از';
+      const amountColor = isSender ? 'var(--red)' : 'var(--turquoise)';
+      const amountSign = isSender ? '-' : '+';
+
+      const row = document.createElement('div');
+      row.className = 'purchase-row';
+      row.innerHTML = `
+        <div>
+          <strong>${icon} ${arrow} ${escapeHtml(otherName || 'کاربر')}</strong>
+          <small>${new Date(t.time).toLocaleDateString('fa-IR')} · ${new Date(t.time).toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'})}</small>
+        </div>
+        <span style="color:${amountColor};font-weight:800;">${amountSign}${formatMoney(t.amount)}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ============================================================
+  // محدودیت‌های پلن
+  // ============================================================
+  function renderPlanLimits() {
+    if (!user) return;
+    const PLAN_LIMITS = {
+      admin:   { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین' },
+      diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی' },
+      silver:  { maxImageSize: 250*1024*1024*1024, maxDailyUploads: 200, maxDailyTotalSize: 200*1024*1024*1024, label: '🥈 طلایی' },
+      bronze:  { maxImageSize: 20*1024*1024*1024, maxDailyUploads: 50, maxDailyTotalSize: 25*1024*1024*1024, label: '🥉 برنزی' }
+    };
+
+    let limit;
+    if (user.email === ADMIN_EMAIL || user.role === 'admin') limit = PLAN_LIMITS.admin;
+    else if (user.hasSubscription && user.subscriptionPlan) limit = PLAN_LIMITS[user.subscriptionPlan] || PLAN_LIMITS.bronze;
+    else limit = PLAN_LIMITS.bronze;
+
+    document.getElementById('planBadge').textContent = limit.label;
+    document.getElementById('limitImageSize').textContent = formatLimitSize(limit.maxImageSize);
+    document.getElementById('limitDailyCount').textContent =
+      limit.maxDailyUploads === Infinity ? '∞ نامحدود' : 'حداکثر ' + limit.maxDailyUploads + ' فایل';
+
+    const log = JSON.parse(localStorage.getItem(DAILY_LOG_KEY)) || {};
+    const today = new Date().toISOString().split('T')[0];
+    const todayLog = log[user.email] || { date: today, count: 0, totalSize: 0 };
+    if (todayLog.date === today) {
+      document.getElementById('limitDailySize').textContent = formatLimitSize(todayLog.totalSize);
+    } else {
+      document.getElementById('limitDailySize').textContent = '۰ بایت';
+    }
+
+    document.getElementById('limitMaxSize').textContent = formatLimitSize(limit.maxDailyTotalSize);
+  }
+
+  // ============================================================
+  // درخواست برداشت
+  // ============================================================
+  document.getElementById('withdrawBtn').addEventListener('click', () => {
+    if (!user) return;
+    const balance = user.balance || 0;
+    const minWithdraw = isAdmin ? 1000 : 50000;
+
+    if (balance < minWithdraw) {
+      return alert(`❌ حداقل ${formatMoney(minWithdraw)} تومان برای برداشت!`);
+    }
+
+    const amount = prompt(
+      `💰 مبلغ برداشت (حداکثر ${formatMoney(balance)}):`,
+      Math.min(balance, minWithdraw)
+    );
+    if (!amount) return;
+    const amt = parseInt(amount);
+    if (isNaN(amt) || amt < minWithdraw || amt > balance) {
+      return alert(`❌ مبلغ باید بین ${formatMoney(minWithdraw)} و ${formatMoney(balance)} باشه!`);
+    }
+
+    const cardNum = prompt('💳 شماره کارت:');
+    if (!cardNum || cardNum.replace(/\D/g, '').length < 16) {
+      return alert('❌ شماره کارت معتبر نیست!');
+    }
+
+    const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+    requests.push({
+      id: Date.now(),
+      userEmail: user.email,
+      userId: user.id,
+      userName: user.fullname,
+      amount: amt,
+      cardNumber: cardNum,
+      status: 'pending',
+      time: Date.now()
+    });
+    localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
+    alert('✅ درخواست برداشت ثبت شد!');
+    renderWallet();
+  });
+
+  document.getElementById('transferBtn').addEventListener('click', () => {
+    openTransferModal();
+  });
+
+  // ============================================================
+  // ✅ مودال اشتراک
+  // ============================================================
+  document.getElementById('renewSubBtn').addEventListener('click', () => {
+    const subModal = document.getElementById('subModal');
+    if (subModal) subModal.classList.remove('hidden');
+  });
+
+  document.getElementById('subClose').addEventListener('click', () => {
+    document.getElementById('subModal').classList.add('hidden');
+  });
+
+  document.getElementById('subModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('subModal')) {
+      document.getElementById('subModal').classList.add('hidden');
+    }
+  });
+
+  document.querySelectorAll('#subModal .plan').forEach(plan => {
+    plan.addEventListener('click', () => {
+      const planName = plan.dataset.plan;
+      const price = plan.dataset.price;
+      const days = plan.dataset.days;
+
+      sessionStorage.setItem('selectedPlan', JSON.stringify({
+        plan: planName,
+        price: price,
+        days: days
+      }));
+
+      window.location.href = `gallery.html?subscribe=1&plan=${planName}&price=${price}&days=${days}`;
+    });
+  });
+
+  document.getElementById('logoutBtn2').addEventListener('click', () => {
+    if (confirm('خارج بشی؟')) {
+      localStorage.removeItem(CURRENT_KEY);
+      window.location.href = 'index.html';
+    }
+  });
+
+  // 🗑️ حذف کامل حساب
+  document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+    if (isAdmin) {
+      alert('❌ ادمین نمی‌تونه حسابش رو از اینجا حذف کنه!');
+      return;
+    }
+    
+    const confirmText = prompt(
+      '⚠️ هشدار جدی!\n\n' +
+      'با این کار تمام اطلاعات شما، آثار، کیف پول و اشتراک شما برای همیشه پاک می‌شود!\n' +
+      'آیا مطمئن هستید؟\n\n' +
+      'برای تایید کلمه DELETE را بنویسید:'
+    );
+    
+    if (confirmText !== 'DELETE') {
+      if (confirmText !== null) alert('❌ لغو شد! (باید DELETE بنویسی)');
+      return;
+    }
+
+    // حذف از دیتابیس
+    users = users.filter(u => u.email !== user.email);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    
+    // حذف آثار
+    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    items = items.filter(i => i.uploadedByEmail !== user.email);
+    localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+
+    // خروج و ریدایرکت
+    localStorage.removeItem(CURRENT_KEY);
+    alert('✅ حساب شما با موفقیت حذف شد.');
+    window.location.href = 'index.html';
+  });
+
+  // ============================================================
+  // نوار پایین
+  // ============================================================
+  function renderBottomNav() {
+    if (!user) return;
+    const nav = document.getElementById('bottomNav');
+    if (!nav) return;
+
+    const isAdminUser = user.email === ADMIN_EMAIL || user.role === 'admin';
+    const isSuperUser = user.email === ADMIN_EMAIL;
+    const subActive = user.hasSubscription ? 'is-active' : '';
+    const adminActive = isAdminUser ? 'is-admin' : '';
+
+    let savedAvatar = localStorage.getItem('navaa_avatar_' + user.email);
+    if (!savedAvatar && user.avatar) savedAvatar = user.avatar;
+
+    const profileContent = savedAvatar
+      ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>`
+      : `<span class="nav-icon">👤</span>`;
+
+    nav.innerHTML = `
+      <button class="nav-pill-btn logout-pill" id="logoutNavBtn">
+        <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
+      </button>
+      <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn">
+        <span class="nav-pill-icon">✨${user.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span>
+        <span class="nav-pill-label">${user.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span>
+      </button>
+      <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''} active">
+        ${profileContent}<span class="nav-center-label">پروفایل</span>
+      </a>
+      ${isAdminUser ? `
+        <button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn">
+          <span class="nav-pill-icon">🛡️</span>
+          <span class="nav-pill-label">${isSuperUser ? 'مدیر کل' : 'ادمین'}</span>
+        </button>` : ''}
+      <button class="nav-pill-btn upload-pill" id="uploadNavBtn">
+        <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
+      </button>`;
+
+    nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => {
+      if (!user.hasSubscription) { window.location.href = 'gallery.html?subscribe=1'; return; }
+      window.location.href = 'gallery.html';
+    });
+    nav.querySelector('#subNavBtn')?.addEventListener('click', () => {
+      const subModal = document.getElementById('subModal');
+      if (subModal) subModal.classList.remove('hidden');
+    });
+    nav.querySelector('#adminNavBtn')?.addEventListener('click', () => {
+      window.location.href = 'admin.html';
+    });
+    nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => {
+      if (confirm('خارج بشی؟')) {
+        localStorage.removeItem(CURRENT_KEY);
+        window.location.href = 'index.html';
+      }
+    });
+  }
+
+  // راه‌اندازی
+  renderInfo();
+  renderMyItems();
+  renderSubscriptions();
+  renderWallet();
+  renderTransfers();
+  renderPlanLimits();
+  renderBottomNav();
+
+  console.log('✅ profile.html بارگذاری شد');
+  if (user) {
+    console.log('👤 کاربر:', user.email);
+    console.log('💰 موجودی:', user.balance || 0);
+  }
+  </script>
+
+  <!-- 🔥 اتصال به Firebase -->
+  <script type="module">
+    import './js/firebase-db.js';
+    await window.FirebaseStorage.init();
+  </script>
+
+</body>
+</html>

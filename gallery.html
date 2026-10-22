@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گالری | Navaa</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="header-inner">
+      <a href="gallery.html" class="logo-small">
+        <span class="logo-icon-sm">🎵</span>
+        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
+      </a>
+
+      <div class="header-actions">
+        <a href="profile.html" class="user-greeting" id="userGreeting" title="پروفایل"></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ TOPBAR ============ -->
+  <div class="topbar-wrap">
+    <div class="topbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="جستجو در عنوان، هنرمند و تگ‌ها...">
+      </div>
+      <div class="topbar-actions">
+        <button id="uploadBtn" class="btn-primary">➕ آپلود اثر</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SUB NAV ============ -->
+  <nav class="sub-nav hidden" id="subNav"></nav>
+
+  <!-- ============ GALLERY ============ -->
+  <main id="gallery" class="gallery"></main>
+
+  <!-- ============ MODAL نمایش بزرگ ============ -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-media">
+        <img id="modalImg" src="" alt="">
+        <div id="modalAudioWrap" class="audio-wrap hidden">
+          <div class="audio-label">🎧 پخش آنلاین آهنگ</div>
+          <audio id="modalAudio" controls preload="none"></audio>
+        </div>
+      </div>
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <p class="modal-artist" id="modalArtist"></p>
+        <p id="modalDesc"></p>
+        <div class="modal-tags" id="modalTags"></div>
+        <div class="modal-actions">
+          <button id="modalDownload" class="btn-primary">⬇️ دانلود</button>
+          <button id="modalLike" class="btn-like">❤️ <span id="modalLikes">0</span></button>
+          <button id="modalDelete" class="btn-danger hidden" style="display:none;">🗑️ حذف اثر</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL آپلود ============ -->
+  <div id="uploadModal" class="modal hidden">
+    <div class="modal-content upload-content">
+      <button class="modal-close" id="uploadClose">✕</button>
+
+      <div class="upload-header">
+        <div class="upload-header-icon">✨</div>
+        <h2>آپلود اثر جدید</h2>
+        <p class="upload-sub">اثرت رو با بقیه به اشتراک بذار</p>
+      </div>
+
+      <form id="uploadForm" class="form upload-form" novalidate>
+
+        <!-- ۱. تصویر اثر -->
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۱</span>
+            <span>تصویر اثر</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+
+          <label class="upload-file-box" for="fileInput">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <div class="upload-file-icon">🖼️</div>
+            <div class="upload-file-text">
+              <strong>انتخاب یا کشیدن تصویر</strong>
+              <small>JPG · PNG · WEBP — اختیاری</small>
+            </div>
+          </label>
+
+          <div id="previewWrap" class="preview-wrap hidden">
+            <img id="preview" class="preview-img" alt="پیش‌نمایش">
+            <button type="button" class="preview-remove" id="previewRemove" title="حذف تصویر">✕</button>
+            <div class="preview-badge">✅ انتخاب شد</div>
+          </div>
+        </div>
+
+        <!-- ۲. فایل صوتی -->
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۲</span>
+            <span>فایل صوتی</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+
+          <label class="upload-file-box upload-file-audio" for="audioInput">
+            <input type="file" id="audioInput" accept="audio/*" hidden>
+            <div class="upload-file-icon">🎧</div>
+            <div class="upload-file-text">
+              <strong>انتخاب فایل صوتی</strong>
+              <small>MP3 · WAV · OGG — برای موسیقی</small>
+            </div>
+          </label>
+
+          <div id="audioFileBox" class="audio-file-box hidden">
+            <span class="audio-file-icon">🎵</span>
+            <span id="audioFileName" class="audio-file-name"></span>
+            <button type="button" class="audio-file-remove" id="audioFileRemove" title="حذف فایل صوتی">✕</button>
+          </div>
+        </div>
+
+        <!-- ۳. اطلاعات اثر -->
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۳</span>
+            <span>اطلاعات اثر</span>
+          </div>
+
+          <div class="upload-field">
+            <label>عنوان اثر <span class="req">*</span></label>
+            <input type="text" name="title" required maxlength="80" placeholder="مثلاً: آهنگ پاپ روز">
+          </div>
+
+          <div class="upload-field">
+            <label>نام هنرمند</label>
+            <input type="text" name="artist" maxlength="60" placeholder="اسم خودت یا نام هنری‌ات">
+          </div>
+
+          <div class="upload-field">
+            <label>توضیح</label>
+            <textarea name="desc" rows="3" maxlength="300" placeholder="یه توضیح کوتاه درباره اثری که آپلود می‌کنی..."></textarea>
+          </div>
+
+          <div class="upload-field">
+            <label>دسته‌بندی <span class="req">*</span></label>
+            <select name="category" id="catSelect" required></select>
+          </div>
+
+          <div class="upload-field">
+            <label>تگ‌ها</label>
+            <input type="text" name="tags" placeholder="پاپ, جدید, عاشقانه (با کاما جدا کن)">
+          </div>
+        </div>
+
+        <!-- ۴. محتوای ویژه -->
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۴</span>
+            <span>محتوای ویژه</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+          <div id="premiumSection" style="background:linear-gradient(135deg,rgba(255,201,60,.06),rgba(255,140,0,.03));border:1.5px dashed rgba(255,201,60,.4);border-radius:14px;padding:1rem;"></div>
+        </div>
+
+        <button type="submit" class="btn-publish">
+          <span class="btn-publish-icon">🚀</span>
+          <span>انتشار اثر</span>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL اشتراک ============ -->
+  <div id="subModal" class="modal hidden">
+    <div class="modal-content sub-content">
+      <button class="modal-close" id="subClose">✕</button>
+      <div class="sub-icon">✨</div>
+      <h2>پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
+
+      <div class="plans">
+
+        <!-- 🥉 برنزی -->
+        <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
+          <div class="plan-header">
+            <span class="plan-name">🥉 برنزی</span>
+            <div class="plan-duration">۱ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۲۰ عکس در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دریافت لایک</li>
+            <li>❌ آپلود موسیقی</li>
+            <li>❌ دانلود نامحدود</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <!-- 🥈 طلایی -->
+        <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="180">
+          <div class="plan-badge">🔥 پیشنهاد ویژه</div>
+          <div class="plan-header">
+            <span class="plan-name">🥈 طلایی</span>
+            <div class="plan-duration">۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۱۰۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۱۰۰ عکس در ماه</li>
+            <li>✅ آپلود ۵ آهنگ در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دانلود نامحدود عکس</li>
+            <li>❌ پخش بدون تبلیغ</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <!-- 💎 الماسی -->
+        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="540">
+          <div class="plan-header">
+            <span class="plan-name">💎 الماسی</span>
+            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۲۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود نامحدود عکس</li>
+            <li>✅ آپلود نامحدود موسیقی</li>
+            <li>✅ دانلود نامحدود</li>
+            <li>✅ نشان الماسی روی پروفایل</li>
+            <li>✅ پشتیبانی اولویت‌دار</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+      </div>
+
+      <p class="sub-hint">💳 پرداخت امن از طریق درگاه بانکی</p>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <p>🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
+  </footer>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="bottom-nav" id="bottomNav"></nav>
+
+  <!-- ============ SCRIPT: مدیریت پارامترهای URL ============ -->
+  <script>
+    // ✅ خواندن پارامترهای URL برای پلن
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('subscribe') === '1') {
+          const subModal = document.getElementById('subModal');
+          if (subModal) subModal.classList.remove('hidden');
+
+          // ✅ اگه پلن مشخص شده بود، مستقیم برو سراغ پرداخت
+          const planName = params.get('plan');
+          const price = params.get('price');
+          const days = params.get('days');
+
+          if (planName && price && days && typeof startPayment === 'function') {
+            setTimeout(() => {
+              subModal.classList.add('hidden');
+              startPayment(planName, parseInt(price), parseInt(days));
+            }, 500);
+          }
+        }
+      }, 300);
+    });
+  </script>
+  <script src="js/app.js"></script>
+  
+  <!-- 🔥 اتصال گالری به Firebase -->
+  <script type="module">
+    import './js/gallery-sync.js';
+  </script>
+</body>
+</html>
