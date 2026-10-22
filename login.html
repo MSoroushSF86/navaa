@@ -66,7 +66,6 @@
 </head>
 <body>
 
-  <!-- دکمه بازگشت به صفحه اصلی (مستقیم به home.html) -->
   <a href="home.html" class="back-home-btn">
     🏠 بازگشت به صفحه اصلی
   </a>
@@ -168,6 +167,7 @@
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
+      // ✅ ارسال به سرور
       if (window.saveToCloud) {
         await window.saveToCloud(USERS_KEY, JSON.stringify(users));
       }
@@ -178,10 +178,37 @@
     });
   </script>
 
+  <!-- ✅ اتصال مستقیم و بدون خطا به Firebase -->
   <script type="module">
-    import { syncDatabase, saveToCloud } from './js/firebase-sync.js';
-    window.saveToCloud = saveToCloud;
-    await syncDatabase();
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      projectId: "navaa-409cb"
+    });
+    const db = getFirestore(app);
+
+    // تابع ارسال به سرور
+    window.saveToCloud = async function(key, value) {
+      try {
+        await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
+        console.log('✅ اطلاعات روی سرور ذخیره شد.');
+      } catch (e) {
+        console.error('❌ خطا در ذخیره:', e);
+      }
+    };
+
+    // سینک کردن موقع لود شدن صفحه
+    async function syncOnLoad() {
+        try {
+            const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
+            if (snap.exists()) {
+                localStorage.setItem('navaa_users', snap.data().value);
+            }
+        } catch(e) {}
+    }
+    syncOnLoad();
   </script>
 </body>
 </html>
