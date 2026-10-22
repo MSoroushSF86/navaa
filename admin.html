@@ -54,13 +54,15 @@
 
   <header class="admin-header">
     <div class="admin-header-inner">
-      <a href="home.html" class="admin-logo-box">
+      <!-- ✅ لینک لوگو به گالری تغییر کرد -->
+      <a href="gallery.html" class="admin-logo-box">
         <span class="logo-icon-sm">🎵</span>
         <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
       </a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
-        <a href="home.html" class="admin-back-btn">
+        <!-- ✅ دکمه رفتن به گالری به گالری تغییر کرد -->
+        <a href="gallery.html" class="admin-back-btn">
           <span>رفتن به گالری</span>
         </a>
       </div>
@@ -150,7 +152,6 @@
     const SETTINGS_KEY = 'navaa_settings';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
-    // 🔥 راه‌حل: اگه کاربر لاگین نبود، اکانت مدیر رو به زور ست کن
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
     if (!currentUser) {
       currentUser = {
