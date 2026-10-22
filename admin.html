@@ -7,77 +7,44 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ============ هدر مخصوص ادمین ============ */
     .admin-header {
       position: relative;
-      background:
-        radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%),
-        radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%),
-        radial-gradient(ellipse at 100% 50%, rgba(255,46,77,.1), transparent 45%),
-        linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
+      background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%),
+                  radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%),
+                  linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
       padding: 1.2rem 1.5rem;
       border-bottom: 1px solid rgba(0,240,212,.15);
       z-index: 10;
     }
-
     .admin-header::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      left: 5%;
-      right: 5%;
+      bottom: 0; left: 5%; right: 5%;
       height: 2px;
-      background: linear-gradient(90deg, transparent 0%, var(--turquoise) 25%, var(--sky) 50%, var(--gold) 75%, var(--red) 100%, transparent 100%);
+      background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent);
       box-shadow: 0 0 12px var(--turquoise);
     }
-
-    .admin-header-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
+    .admin-header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .admin-logo-box { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
-
     .admin-badge-large {
       display: inline-flex; align-items: center; gap: .4rem;
       background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1));
       border: 1px solid rgba(255,201,60,.5); color: var(--gold);
       padding: .5rem 1.1rem; border-radius: 999px;
-      font-size: .82rem; font-weight: 800;
-      box-shadow: 0 0 16px rgba(255,201,60,.3);
-      animation: pulse 2s ease-in-out infinite;
+      font-size: .82rem; font-weight: 800; box-shadow: 0 0 16px rgba(255,201,60,.3);
     }
-
     .admin-back-btn {
       display: inline-flex; align-items: center; gap: .5rem;
       background: linear-gradient(135deg, var(--turquoise), var(--sky));
       color: #001a1c !important; text-decoration: none;
       padding: .8rem 1.5rem; border-radius: 999px;
-      font-size: .92rem; font-weight: 800;
-      box-shadow: 0 4px 20px rgba(0,240,212,.5);
-      transition: all .25s; position: relative; overflow: hidden;
+      font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5);
+      transition: all .25s;
     }
-
-    .admin-back-btn::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-      transform: translateX(-100%); transition: transform .6s;
-    }
-
-    .admin-back-btn:hover::before { transform: translateX(100%); }
-    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7), 0 0 60px rgba(56,189,248,.4); }
-    .admin-back-btn-icon { font-size: 1.2rem; transition: transform .3s; }
-    .admin-back-btn:hover .admin-back-btn-icon { transform: translateX(-4px) scale(1.15); }
-
+    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7); }
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
-
     .btn-delete-user {
       background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff;
       border: none; padding: .45rem .8rem; border-radius: 8px;
@@ -85,22 +52,20 @@
       cursor: pointer; transition: .2s; flex: 1; min-width: 90px;
       box-shadow: 0 0 12px rgba(255,46,77,.4);
     }
-    .btn-delete-user:hover { filter: brightness(1.15); transform: scale(1.02); box-shadow: 0 0 20px rgba(255,46,77,.7); }
+    .btn-delete-user:hover { filter: brightness(1.15); transform: scale(1.02); }
   </style>
 </head>
 <body>
 
   <header class="admin-header">
     <div class="admin-header-inner">
-      <a href="gallery.html" class="admin-logo-box">
+      <a href="home.html" class="admin-logo-box">
         <span class="logo-icon-sm">🎵</span>
         <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
       </a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
-        <!-- دکمه‌های ورود/ثبت‌نام برای حالتی که کاربر لاگین نیست -->
-        <a href="login.html" id="loginBtn" style="display:none; background:linear-gradient(135deg,var(--gold),#ff8c00); color:#1a1100 !important; text-decoration:none; padding:.8rem 1.5rem; border-radius:999px; font-weight:800; font-size:.92rem; box-shadow:0 4px 20px rgba(255,201,60,.5);">🔑 ورود / ثبت‌نام</a>
-        <a href="gallery.html" class="admin-back-btn" id="galleryBtn" style="display:none;">
+        <a href="home.html" class="admin-back-btn" id="backBtn">
           <span class="admin-back-btn-icon">🎨</span>
           <span>رفتن به گالری</span>
         </a>
@@ -157,6 +122,10 @@
     </section>
   </main>
 
+  <div id="loadingBox" style="text-align:center; padding:5rem 1rem; color:#fff;">
+    <h2>⏳ در حال دریافت اطلاعات از سرور...</h2>
+  </div>
+
   <div id="giftModal" class="modal hidden">
     <div class="modal-content sub-content" style="max-width:900px;">
       <button class="modal-close" id="giftClose">✕</button>
@@ -192,38 +161,22 @@
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
-    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    let users = []; // مقدار اولیه خالی
+    let items = [];
     let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
 
-    // چک کردن لاگین و دسترسی
-    if (!currentUser) {
-      document.getElementById('loginBtn').style.display = 'inline-block';
-      document.getElementById('galleryBtn').style.display = 'none';
-      // پنل مدیریت رو مخفی نگه دار
-    } else if (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL) {
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
       alert('⛔ دسترسی نداری!');
-      window.location.href = 'gallery.html';
-    } else {
-      document.getElementById('loginBtn').style.display = 'none';
-      document.getElementById('galleryBtn').style.display = 'inline-block';
-      document.getElementById('adminMain').style.display = 'block';
+      window.location.href = 'home.html'; // ✅ تغییر مسیر
     }
 
     const isSuperAdmin = currentUser ? (currentUser.email === ADMIN_EMAIL) : false;
 
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-    }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
-    function getInitials(name) {
-      if (!name) return '؟';
-      const parts = name.trim().split(' ');
-      return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0);
-    }
+    function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
     function saveUsers() {
-      if (!currentUser) return;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       const meIdx = users.findIndex(u => u.id === currentUser.id);
       if (meIdx !== -1) { currentUser = users[meIdx]; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
@@ -267,12 +220,11 @@
       });
     });
 
-    document.getElementById('userSearch')?.addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
-    document.getElementById('itemSearch')?.addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
+    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
+    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
 
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
-      if (!grid) return;
       grid.innerHTML = '';
       let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
       if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.phone || '').includes(search));
@@ -281,11 +233,8 @@
       sorted.forEach((u) => {
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
         const isSuper = u.email === ADMIN_EMAIL;
-        const isMe = u.id === currentUser?.id;
-        let roleBadge = '';
-        if (isSuper) roleBadge = '<span class="role-badge role-super">👑 مدیر کل</span>';
-        else if (isUserAdmin) roleBadge = '<span class="role-badge role-admin">🛡️ ادمین</span>';
-        else roleBadge = '<span class="role-badge role-user">👤 کاربر</span>';
+        const isMe = u.id === currentUser.id;
+        let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
 
         let actions = '';
@@ -331,202 +280,120 @@
       if (!user) return;
       if (user.email === ADMIN_EMAIL) return alert('❌ نمی‌تونی مدیر کل رو حذف کنی!');
       if (user.id === currentUser.id) return alert('❌ نمی‌تونی خودت رو حذف کنی!');
-
       const confirmText = prompt(`🗑️ حذف کامل «${user.fullname}»\n\n⚠️ همه اطلاعات پاک میشه!\nبرای تایید بنویس: DELETE`);
       if (confirmText !== 'DELETE') { if (confirmText !== null) alert('❌ لغو شد!'); return; }
 
-      const userItemsCount = items.filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email).length;
       users = users.filter(u => u.id !== id);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       items = items.filter(i => i.uploadedBy !== id && i.uploadedByEmail !== user.email);
       saveItems();
-      localStorage.removeItem('navaa_avatar_' + user.email);
-
-      alert(`✅ کاربر «${user.fullname}» کامل حذف شد!\n🗑️ ${userItemsCount} اثرش هم پاک شد`);
+      alert(`✅ کاربر حذف شد!`);
       renderUsers(); renderItems(); updateStats();
     }
 
-    function promoteAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🛡️ «${user.fullname}» ادمین بشه؟`)) return; user.role = 'admin'; user.hasSubscription = true; user.subscriptionPlan = 'bronze'; user.subscriptionExpiry = Date.now() + (30 * 24 * 60 * 60 * 1000); saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
-    function revokeAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`❌ از ادمینی مطمئنی؟`)) return; user.role = 'user'; user.hasSubscription = false; user.subscriptionPlan = null; user.subscriptionExpiry = null; saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
-    function revokeSubscription(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🚫 اشتراک لغو بشه؟`)) return; user.hasSubscription = false; user.subscriptionPlan = null; user.subscriptionExpiry = null; saveUsers(); alert('✅ انجام شد'); renderUsers(); updateStats(); }
+    function promoteAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🛡️ «${user.fullname}» ادمین بشه؟`)) return; user.role = 'admin'; saveUsers(); renderUsers(); updateStats(); }
+    function revokeAdmin(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`❌ از ادمینی مطمئنی؟`)) return; user.role = 'user'; saveUsers(); renderUsers(); updateStats(); }
+    function revokeSubscription(id) { const user = users.find(u => u.id === id); if (!user) return; if (!confirm(`🚫 اشتراک لغو بشه؟`)) return; user.hasSubscription = false; saveUsers(); renderUsers(); updateStats(); }
 
     let giftTargetId = null;
     function openGiftModal(id) { const user = users.find(u => u.id === id); if (!user) return; giftTargetId = id; document.getElementById('giftUserName').textContent = user.fullname; document.getElementById('giftModal').classList.remove('hidden'); }
-    document.getElementById('giftClose')?.addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
-    document.getElementById('giftModal')?.addEventListener('click', (e) => { if (e.target.id === 'giftModal') { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; } });
+    document.getElementById('giftClose').addEventListener('click', () => { document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; });
     document.querySelectorAll('#giftModal .plan').forEach(plan => {
       plan.querySelector('.plan-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        const planName = plan.dataset.plan, days = parseInt(plan.dataset.days);
         const user = users.find(u => u.id === giftTargetId);
         if (!user) return;
-        if (!confirm(`به «${user.fullname}» پلن ${planName} هدیه بدی؟`)) return;
-        user.hasSubscription = true; user.subscriptionPlan = planName; user.subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
-        saveUsers(); alert('🎁 هدیه داده شد!'); document.getElementById('giftModal').classList.add('hidden'); giftTargetId = null; renderUsers(); updateStats();
+        user.hasSubscription = true; user.subscriptionPlan = plan.dataset.plan; user.subscriptionExpiry = Date.now() + (parseInt(plan.dataset.days) * 24 * 60 * 60 * 1000);
+        saveUsers(); document.getElementById('giftModal').classList.add('hidden'); renderUsers(); updateStats();
       });
     });
 
     function renderItems(search = '') {
       const adminItems = document.getElementById('adminItems');
-      if (!adminItems) return;
       let list = [...items].sort((a, b) => b.time - a.time);
-      if (search) list = list.filter(i => i.title.toLowerCase().includes(search) || (i.artist || '').toLowerCase().includes(search));
+      if (search) list = list.filter(i => i.title.toLowerCase().includes(search));
       if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
       adminItems.innerHTML = '';
       list.forEach(item => {
         const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
-        const uploaderName = uploader ? uploader.fullname : (item.artist || 'ناشناس');
-        const isPremium = item.isPremium && item.price > 0;
         const card = document.createElement('div'); card.className = 'item-card';
         card.innerHTML = `
-          <div class="item-thumb">
-            <img src="${item.image}" alt="" loading="lazy">
-            ${item.audio ? '<span class="item-audio-badge">🎵</span>' : ''}
-            ${isPremium ? `<span class="premium-badge" style="position:absolute;top:6px;left:6px;">💎 ${formatMoney(item.price)}</span>` : ''}
-            <button class="item-delete-btn" data-id="${item.id}" title="حذف">🗑️</button>
-          </div>
-          <div class="item-info">
-            <p class="item-title">${escapeHtml(item.title)}</p>
-            <p class="item-artist">👤 ${escapeHtml(uploaderName)}</p>
-            ${isPremium ? `<p class="item-artist" style="color:#ffc93c;">💰 ${item.purchases?.length || 0} خرید</p>` : ''}
-          </div>`;
+          <div class="item-thumb"><img src="${item.image}" alt=""><button class="item-delete-btn" data-id="${item.id}">🗑️</button></div>
+          <div class="item-info"><p class="item-title">${escapeHtml(item.title)}</p><p class="item-artist">👤 ${escapeHtml(uploader ? uploader.fullname : 'ناشناس')}</p></div>`;
         card.querySelector('.item-delete-btn').addEventListener('click', (e) => { e.stopPropagation(); deleteItemAdmin(item.id); });
         adminItems.appendChild(card);
       });
     }
+    function deleteItemAdmin(id) { if (!confirm('حذف بشه؟')) return; items = items.filter(i => i.id !== id); saveItems(); renderItems(); }
 
-    function deleteItemAdmin(id) { const item = items.find(i => i.id === id); if (!item) return; if (!confirm(`🗑️ حذف «${item.title}»؟`)) return; items = items.filter(i => i.id !== id); saveItems(); alert('🗑️ حذف شد!'); renderItems(); updateStats(); }
-
-    function renderPayments() {
-      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], list = document.getElementById('paymentsList');
-      if (!list) return;
-      if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
-      list.innerHTML = '';
-      requests.sort((a,b) => b.time - a.time).forEach(req => {
-        const status = req.status, statusLabel = status === 'pending' ? '⏳ در انتظار' : status === 'approved' ? '✅ تایید' : '❌ رد';
-        const card = document.createElement('div'); card.className = 'user-card';
-        card.innerHTML = `
-          <div class="user-card-head"><div class="user-avatar">💳</div><div class="user-main"><h4>${escapeHtml(req.userName)}</h4><div class="user-badges"><span class="role-badge role-user">${statusLabel}</span><span class="badge-yes">${req.planLabel || req.planName}</span></div></div></div>
-          <div class="user-info-grid">
-            <div class="info-cell"><span>📧 ایمیل</span><strong style="font-size:.72rem;">${escapeHtml(req.userEmail)}</strong></div>
-            <div class="info-cell"><span>💰 مبلغ</span><strong style="color:#ffc93c;">${formatMoney(req.price)}</strong></div>
-            <div class="info-cell"><span>🔢 پیگیری</span><strong dir="ltr">${escapeHtml(req.trackingNumber)}</strong></div>
-            <div class="info-cell"><span>📅 تاریخ</span><strong>${new Date(req.time).toLocaleDateString('fa-IR')}</strong></div>
-          </div>
-          ${status === 'pending' ? `<div class="user-actions"><button class="btn-toggle admin-promote" data-approve="${req.id}">✅ تایید</button><button class="btn-toggle admin-revoke" data-reject="${req.id}">❌ رد</button></div>` : ''}`;
-        list.appendChild(card);
-      });
-      list.querySelectorAll('[data-approve]').forEach(btn => btn.addEventListener('click', () => approvePayment(parseInt(btn.dataset.approve))));
-      list.querySelectorAll('[data-reject]').forEach(btn => btn.addEventListener('click', () => rejectPayment(parseInt(btn.dataset.reject))));
-    }
-
-    function approvePayment(id) {
-      const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], req = requests.find(r => r.id === id);
-      if (!req || req.status !== 'pending') return; if (!confirm(`✅ پرداخت ${formatMoney(req.price)} تایید بشه؟`)) return;
-      req.status = 'approved'; req.approvedAt = Date.now(); localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
-      const userIdx = users.findIndex(u => u.email === req.userEmail);
-      if (userIdx !== -1) {
-        const expiryDate = Date.now() + (req.days * 24 * 60 * 60 * 1000);
-        users[userIdx].hasSubscription = true; users[userIdx].subscriptionPlan = req.planName; users[userIdx].subscriptionExpiry = expiryDate;
-        users[userIdx].subscriptionHistory = users[userIdx].subscriptionHistory || [];
-        users[userIdx].subscriptionHistory.push({ id: Date.now(), planName: req.planName, planLabel: req.planLabel || req.planName, price: req.price, days: req.days, method: 'card', trackingNumber: req.trackingNumber, time: Date.now(), expiryDate });
-        saveUsers();
-      }
-      alert('✅ تایید شد'); renderPayments(); updateStats();
-    }
-    function rejectPayment(id) { const requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [], req = requests.find(r => r.id === id); if (!req) return; if (!confirm('رد بشه؟')) return; req.status = 'rejected'; req.rejectedAt = Date.now(); localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests)); alert('❌ رد شد'); renderPayments(); updateStats(); }
-
-    function renderWithdraws() {
-      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], list = document.getElementById('withdrawsList');
-      if (!list) return;
-      if (requests.length === 0) { list.innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; return; }
-      list.innerHTML = '';
-      requests.sort((a,b) => b.time - a.time).forEach(req => {
-        const status = req.status, statusLabel = status === 'pending' ? '⏳ در انتظار' : status === 'approved' ? '✅ پرداخت شده' : '❌ رد';
-        const card = document.createElement('div'); card.className = 'user-card';
-        card.innerHTML = `
-          <div class="user-card-head"><div class="user-avatar">💸</div><div class="user-main"><h4>${escapeHtml(req.userName)}</h4><div class="user-badges"><span class="role-badge role-user">${statusLabel}</span></div></div></div>
-          <div class="user-info-grid">
-            <div class="info-cell"><span>📧 ایمیل</span><strong style="font-size:.72rem;">${escapeHtml(req.userEmail)}</strong></div>
-            <div class="info-cell"><span>💰 مبلغ</span><strong style="color:#ffc93c;">${formatMoney(req.amount)}</strong></div>
-            <div class="info-cell"><span>💳 کارت</span><strong dir="ltr" style="font-size:.75rem;">${escapeHtml(req.cardNumber)}</strong></div>
-            <div class="info-cell"><span>📅 تاریخ</span><strong>${new Date(req.time).toLocaleDateString('fa-IR')}</strong></div>
-          </div>
-          ${status === 'pending' ? `<div class="user-actions"><button class="btn-toggle admin-promote" data-approve-w="${req.id}">✅ پرداخت شد</button><button class="btn-toggle admin-revoke" data-reject-w="${req.id}">❌ رد</button></div>` : ''}`;
-        list.appendChild(card);
-      });
-      list.querySelectorAll('[data-approve-w]').forEach(btn => btn.addEventListener('click', () => approveWithdraw(parseInt(btn.dataset.approveW))));
-      list.querySelectorAll('[data-reject-w]').forEach(btn => btn.addEventListener('click', () => rejectWithdraw(parseInt(btn.dataset.rejectW))));
-    }
-
-    function approveWithdraw(id) {
-      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], req = requests.find(r => r.id === id);
-      if (!req || req.status !== 'pending') return; if (!confirm(`✅ برداشت ${formatMoney(req.amount)} پرداخت شد؟`)) return;
-      req.status = 'approved'; req.approvedAt = Date.now(); localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-      const userIdx = users.findIndex(u => u.email === req.userEmail);
-      if (userIdx !== -1) { users[userIdx].balance = Math.max(0, (users[userIdx].balance || 0) - req.amount); saveUsers(); }
-      alert('✅ انجام شد'); renderWithdraws(); updateStats();
-    }
-    function rejectWithdraw(id) { const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [], req = requests.find(r => r.id === id); if (!req) return; if (!confirm('رد بشه؟')) return; req.status = 'rejected'; req.rejectedAt = Date.now(); localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests)); alert('❌ رد شد'); renderWithdraws(); updateStats(); }
-
+    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
+    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
     function renderSettings() { document.getElementById('commissionInput').value = settings.commissionRate; document.getElementById('maxPriceInput').value = settings.maxItemPrice; }
-    document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
-      const commission = parseInt(document.getElementById('commissionInput').value), maxPrice = parseInt(document.getElementById('maxPriceInput').value);
-      if (commission < 0 || commission > 50) return alert('❌ کمیسیون بین ۰ تا ۵۰!');
-      if (maxPrice < 10000) return alert('❌ حداکثر قیمت حداقل ۱۰,۰۰۰!');
-      settings.commissionRate = commission; settings.maxItemPrice = maxPrice; localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); alert('✅ ذخیره شد!');
-    });
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => { settings.commissionRate = parseInt(document.getElementById('commissionInput').value); settings.maxItemPrice = parseInt(document.getElementById('maxPriceInput').value); localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); alert('✅ ذخیره شد!'); });
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      if (!currentUser) return;
-      const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
-      const isSuperUser = currentUser.email === ADMIN_EMAIL;
-      const subActive = currentUser.hasSubscription ? 'is-active' : '';
-      const adminActive = isAdminUser ? 'is-admin' : '';
-      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
-      if (!savedAvatar && currentUser.avatar) savedAvatar = currentUser.avatar;
-      const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
       nav.innerHTML = `
-        <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
-        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn"><span class="nav-pill-icon">✨${currentUser.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span><span class="nav-pill-label">${currentUser.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span></button>
-        <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">${profileContent}<span class="nav-center-label">پروفایل</span></a>
-        ${isAdminUser ? `<button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">${isSuperUser ? 'مدیر کل' : 'ادمین'}</span></button>` : ''}
-        <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>`;
-      nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
-      nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
-      nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
-      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'index.html'; } });
+        <a href="home.html" class="nav-pill-btn"><span class="nav-pill-icon">🏠</span><span class="nav-pill-label">خانه</span></a>
+        <a href="gallery.html" class="nav-pill-btn"><span class="nav-pill-icon">🎨</span><span class="nav-pill-label">گالری</span></a>
+        <a href="admin.html" class="nav-pill-btn active"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیریت</span></a>
+        <button class="nav-pill-btn" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>`;
+      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // رندر اولیه
-    if (currentUser) {
-      renderUsers(); renderItems(); updateStats(); renderBottomNav();
-    }
+    // ✅ راه‌اندازی اولیه (نمایش لودینگ تا آمدن دیتا)
+    document.getElementById('loadingBox').style.display = 'block';
+    document.getElementById('adminMain').style.display = 'none';
+    renderBottomNav();
+
   </script>
 
-  <!-- 🔥 اتصال به Firebase و به‌روزرسانی لحظه‌ای دیتا -->
+  <!-- 🔥 اتصال به دیتابیس ابری و لود دیتا قبل از نمایش صفحه -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const app = initializeApp({
+    const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
       projectId: "navaa-409cb"
-    });
+    };
+    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
-      if (docSnap.exists()) {
-        const cloudUsers = JSON.parse(docSnap.data().value);
-        if (typeof users !== 'undefined') {
-          users.length = 0; 
-          users.push(...cloudUsers); 
-          if (typeof renderUsers === 'function') renderUsers();
-          if (typeof updateStats === 'function') updateStats();
+    async function syncAndLoad() {
+      try {
+        // 1. دریافت کاربران
+        const usersRef = doc(db, 'navaa_storage', 'navaa_users');
+        const usersSnap = await getDoc(usersRef);
+        if (usersSnap.exists()) {
+          window.users = JSON.parse(usersSnap.data().value);
+          localStorage.setItem('navaa_users', usersSnap.data().value);
         }
+
+        // 2. دریافت آثار
+        const itemsRef = doc(db, 'navaa_storage', 'navaa_items_v3');
+        const itemsSnap = await getDoc(itemsRef);
+        if (itemsSnap.exists()) {
+          window.items = JSON.parse(itemsSnap.data().value);
+          localStorage.setItem('navaa_items_v3', itemsSnap.data().value);
+        }
+
+        // 3. حالا که دیتا اومد، نمایش بده
+        document.getElementById('loadingBox').style.display = 'none';
+        document.getElementById('adminMain').style.display = 'block';
+        
+        // آپدیت کردن متغیرهای داخل اسکریپت اصلی و رندر
+        if (typeof renderUsers === 'function') renderUsers();
+        if (typeof renderItems === 'function') renderItems();
+        if (typeof updateStats === 'function') updateStats();
+
+      } catch (e) {
+        console.error('خطا در دریافت اطلاعات:', e);
+        document.getElementById('loadingBox').innerHTML = '<h2 style="color:red;">خطا در دریافت اطلاعات از سرور!</h2>';
       }
-    });
+    }
+
+    syncAndLoad();
   </script>
 </body>
 </html>
