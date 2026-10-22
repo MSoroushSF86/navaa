@@ -9,20 +9,37 @@
 </head>
 <body>
 
-  <!-- ============ HEADER ============ -->
+   <!-- ============ HEADER ============ -->
   <header>
     <div class="header-inner">
-      <a href="gallery.html" class="logo-small">
+      <a href="index.html" class="logo-small" title="صفحه اصلی">
         <span class="logo-icon-sm">🎵</span>
         <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
       </a>
 
-      <div class="header-actions">
+      <div class="header-actions" style="display:flex; align-items:center; gap:1rem;">
+        <!-- دکمه بازگشت به صفحه اصلی -->
+        <a href="index.html" style="
+          color: var(--text-dim); 
+          text-decoration: none; 
+          font-size: .85rem; 
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: .4rem;
+          padding: .5rem .8rem;
+          border-radius: 8px;
+          transition: .2s;
+        " onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.color='var(--text-dim)'; this.style.background='transparent'">
+          🏠 صفحه اصلی
+        </a>
+
+        <!-- پروفایل کاربر -->
         <a href="profile.html" class="user-greeting" id="userGreeting" title="پروفایل"></a>
       </div>
     </div>
   </header>
-
+  
   <!-- ============ TOPBAR ============ -->
   <div class="topbar-wrap">
     <div class="topbar">
