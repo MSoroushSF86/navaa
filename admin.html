@@ -17,7 +17,6 @@
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
-    .btn-delete-user { background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff; border: none; padding: .45rem .8rem; border-radius: 8px; font-family: inherit; font-size: .75rem; font-weight: 700; cursor: pointer; transition: .2s; flex: 1; min-width: 90px; }
   </style>
 </head>
 <body>
@@ -79,21 +78,30 @@
     const ITEMS_KEY = 'navaa_items_v3';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
+    // 🔥 فیکس کردن اطلاعات مدیر
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
-    if (!currentUser) {
-      currentUser = { id: 1, fullname: "مدیر", email: ADMIN_EMAIL, phone: "09120000000", role: "admin", hasSubscription: true, subscriptionPlan: "diamond", balance: 5000000, joinDate: Date.now(), banned: false };
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL || currentUser.phone !== '09200914119') {
+      currentUser = { 
+        id: 1, fullname: "M_Soroush_SF_86", email: ADMIN_EMAIL, phone: "09200914119", 
+        role: "admin", hasSubscription: true, subscriptionPlan: "diamond", 
+        balance: 5000000, joinDate: Date.now(), banned: false 
+      };
       localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
     }
 
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    if (!users.find(u => u.email === ADMIN_EMAIL)) {
+    const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+    if (adminIdx === -1) {
       users.push(currentUser);
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    } else {
+      users[adminIdx] = { ...users[adminIdx], phone: "09200914119", subscriptionPlan: "diamond", balance: 5000000, role: "admin", hasSubscription: true };
     }
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
 
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+    function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
     function updateStats() {
@@ -112,7 +120,12 @@
 
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
+        const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
         const isMe = u.id === currentUser.id;
+        
+        let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
+        let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
+
         const card = document.createElement('div');
         card.className = 'user-card';
         card.innerHTML = `
@@ -120,15 +133,63 @@
             <div class="user-avatar">${escapeHtml(getInitials(u.fullname))}</div>
             <div class="user-main">
               <h4>${escapeHtml(u.fullname)} ${isMe ? '<small style="color:#00f0d4;">(شما)</small>' : ''}</h4>
-              <div class="user-badges">${isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : '<span class="role-badge role-user">👤 کاربر</span>'}</div>
+              <div class="user-badges">${roleBadge}${subBadge}</div>
             </div>
           </div>
           <div class="user-info-grid">
             <div class="info-cell"><span>📞 شماره</span><strong dir="ltr">${escapeHtml(u.phone || '—')}</strong></div>
             <div class="info-cell"><span>📧 ایمیل</span><strong dir="ltr" style="font-size:.75rem;">${escapeHtml(u.email)}</strong></div>
+            <div class="info-cell"><span>💰 موجودی</span><strong style="color:#ffc93c;">${formatMoney(u.balance || 0)}</strong></div>
+            <div class="info-cell"><span>📅 عضویت</span><strong>${new Date(u.joinDate || Date.now()).toLocaleDateString('fa-IR')}</strong></div>
           </div>
         `;
         grid.appendChild(card);
+      });
+    }
+
+    function renderBottomNav() {
+      const nav = document.getElementById('bottomNav'); if (!nav) return;
+      const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
+      const isSuperUser = currentUser.email === ADMIN_EMAIL;
+      const subActive = currentUser.hasSubscription ? 'is-active' : '';
+      const adminActive = isAdminUser ? 'is-admin' : '';
+      
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
+      if (!savedAvatar && currentUser.avatar) savedAvatar = currentUser.avatar;
+      
+      const profileContent = savedAvatar 
+        ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>`
+        : `<span class="nav-icon">👤</span>`;
+
+      nav.innerHTML = `
+        <button class="nav-pill-btn logout-pill" id="logoutNavBtn">
+          <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
+        </button>
+        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn">
+          <span class="nav-pill-icon">✨${currentUser.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span>
+          <span class="nav-pill-label">${currentUser.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span>
+        </button>
+        <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">
+          ${profileContent}<span class="nav-center-label">پروفایل</span>
+        </a>
+        ${isAdminUser ? `
+          <button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn">
+            <span class="nav-pill-icon">🛡️</span>
+            <span class="nav-pill-label">${isSuperUser ? 'مدیر کل' : 'ادمین'}</span>
+          </button>` : ''}
+        <button class="nav-pill-btn upload-pill" id="uploadNavBtn">
+          <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
+        </button>
+      `;
+
+      nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
+      nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
+      nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
+      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { 
+        if (confirm('خارج بشی؟')) { 
+          localStorage.removeItem(CURRENT_KEY); 
+          window.location.href = 'home.html'; 
+        } 
       });
     }
 
@@ -136,7 +197,9 @@
       let localUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       const merged = [...cloudUsers];
       const admin = localUsers.find(u => u.email === ADMIN_EMAIL);
-      if (admin && !merged.find(u => u.email === ADMIN_EMAIL)) merged.push(admin);
+      if (admin && !merged.find(u => u.email === ADMIN_EMAIL)) {
+        merged.push(admin);
+      }
       
       users = merged;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -144,10 +207,10 @@
       updateStats();
     };
 
-    renderUsers(); updateStats();
+    renderUsers(); updateStats(); renderBottomNav();
   </script>
 
-  <!-- 🔥 اتصال زنده به Firebase (onSnapshot) -->
+  <!-- 🔥 اتصال زنده به Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -164,13 +227,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // onSnapshot یعنی هر لحظه که کاربر جدیدی اضافه بشه، اینجا آپدیت میشه
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
-        if (typeof window.renderUsersFromCloud === 'function') {
-          window.renderUsersFromCloud(cloudUsers);
-        }
+        if (typeof window.renderUsersFromCloud === 'function') window.renderUsersFromCloud(cloudUsers);
       }
     });
   </script>
