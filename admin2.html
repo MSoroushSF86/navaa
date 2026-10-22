@@ -78,19 +78,19 @@
     const ITEMS_KEY = 'navaa_items_v3';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
-    let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
-    // 🔥 فیکس کردن اطلاعات مدیر به زور
-    currentUser = { 
+    // اطلاعات استاندارد مدیر
+    const adminData = { 
       id: 1, fullname: "M_Soroush_SF_86", email: ADMIN_EMAIL, phone: "09200914119", 
       role: "admin", hasSubscription: true, subscriptionPlan: "diamond", 
       balance: 5000000, joinDate: Date.now(), banned: false 
     };
-    localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-
+    
+    localStorage.setItem(CURRENT_KEY, JSON.stringify(adminData));
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    // پاک کردن مدیر قدیمی و گذاشتن مدیر جدید
+    
+    // حذف مدیر قدیمی و اضافه کردن جدید به لیست لوکال
     users = users.filter(u => u.email !== ADMIN_EMAIL);
-    users.push(currentUser);
+    users.push(adminData);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
@@ -105,6 +105,7 @@
       document.getElementById('statItems').textContent = items.length;
     }
 
+    // ✅ کارت کاربر با تمام جزییات (موجودی، اشتراک، شماره)
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
       grid.innerHTML = '';
@@ -116,7 +117,7 @@
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
-        const isMe = u.id === currentUser.id;
+        const isMe = u.id === adminData.id;
         
         let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
@@ -142,15 +143,15 @@
       });
     }
 
+    // ✅ نوار پایین دقیقا مثل عکس شماره 2
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
-      const isSuperUser = currentUser.email === ADMIN_EMAIL;
-      const subActive = currentUser.hasSubscription ? 'is-active' : '';
+      const isAdminUser = adminData.email === ADMIN_EMAIL || adminData.role === 'admin';
+      const isSuperUser = adminData.email === ADMIN_EMAIL;
+      const subActive = adminData.hasSubscription ? 'is-active' : '';
       const adminActive = isAdminUser ? 'is-admin' : '';
       
-      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
-      if (!savedAvatar && currentUser.avatar) savedAvatar = currentUser.avatar;
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + adminData.email);
       
       const profileContent = savedAvatar 
         ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>`
@@ -161,8 +162,8 @@
           <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
         </button>
         <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn">
-          <span class="nav-pill-icon">✨${currentUser.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span>
-          <span class="nav-pill-label">${currentUser.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span>
+          <span class="nav-pill-icon">✨${adminData.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span>
+          <span class="nav-pill-label">${adminData.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span>
         </button>
         <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">
           ${profileContent}<span class="nav-center-label">پروفایل</span>
@@ -179,7 +180,7 @@
 
       nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
       nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
-      nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin2.html');
+      nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { 
         if (confirm('خارج بشی؟')) { 
           localStorage.removeItem(CURRENT_KEY); 
@@ -189,14 +190,11 @@
     }
 
     window.renderUsersFromCloud = function(cloudUsers) {
-      let localUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      const merged = [...cloudUsers];
-      const admin = localUsers.find(u => u.email === ADMIN_EMAIL);
-      if (admin && !merged.find(u => u.email === ADMIN_EMAIL)) {
-        merged.push(admin);
-      }
+      // 🔥 اینجا ما کاربر مدیر رو مجبور می‌کنیم اطلاعات درست رو داشته باشه
+      let updatedUsers = cloudUsers.filter(u => u.email !== ADMIN_EMAIL);
+      updatedUsers.push(adminData);
       
-      users = merged;
+      users = updatedUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       renderUsers();
       updateStats();
@@ -207,7 +205,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -221,12 +219,33 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
-      if (docSnap.exists()) {
-        const cloudUsers = JSON.parse(docSnap.data().value);
-        if (typeof window.renderUsersFromCloud === 'function') window.renderUsersFromCloud(cloudUsers);
-      }
-    });
+    // 🔥 اصلاح اتوماتیک دیتابیس ابری (حذف شماره اشتباه و گذاشتن 09200914119)
+    async function fixAdminInCloud() {
+      const docRef = doc(db, 'navaa_storage', 'navaa_users');
+      onSnapshot(docRef, async (docSnap) => {
+        if (docSnap.exists()) {
+          let cloudUsers = JSON.parse(docSnap.data().value);
+          let adminInCloud = cloudUsers.find(u => u.email === 'm.soroush.salari@gmail.com');
+          
+          // اگه شماره اشتباه بود، درستش کن
+          if (adminInCloud && adminInCloud.phone !== '09200914119') {
+             adminInCloud.phone = '09200914119';
+             adminInCloud.balance = 5000000;
+             adminInCloud.subscriptionPlan = 'diamond';
+             adminInCloud.hasSubscription = true;
+             
+             // ذخیره اصلاحات در دیتابیس
+             await setDoc(docRef, { value: JSON.stringify(cloudUsers), updatedAt: Date.now() });
+          }
+          
+          if (typeof window.renderUsersFromCloud === 'function') {
+            window.renderUsersFromCloud(cloudUsers);
+          }
+        }
+      });
+    }
+    
+    fixAdminInCloud();
   </script>
 </body>
 </html>
