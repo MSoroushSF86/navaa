@@ -543,7 +543,7 @@
         (_freshU.bannedReason ? `دلیل: ${_freshU.bannedReason}\n\n` : '') +
         'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.'
       );
-      window.location.href = 'index.html';
+      window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
     } else if (user && user.email) {
       const freshUser = users.find(u => u.email === user.email);
       if (freshUser) {
@@ -1404,7 +1404,7 @@
   document.getElementById('logoutBtn2').addEventListener('click', () => {
     if (confirm('خارج بشی؟')) {
       localStorage.removeItem(CURRENT_KEY);
-      window.location.href = 'index.html';
+      window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
     }
   });
 
@@ -1439,7 +1439,7 @@
     // خروج و ریدایرکت
     localStorage.removeItem(CURRENT_KEY);
     alert('✅ حساب شما با موفقیت حذف شد.');
-    window.location.href = 'index.html';
+    window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
   });
 
   // ============================================================
@@ -1496,7 +1496,7 @@
     nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => {
       if (confirm('خارج بشی؟')) {
         localStorage.removeItem(CURRENT_KEY);
-        window.location.href = 'index.html';
+        window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
       }
     });
   }
