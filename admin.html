@@ -73,7 +73,7 @@
     </div>
   </header>
 
-  <main class="admin-main" id="adminMain" style="display:none;">
+  <main class="admin-main" id="adminMain">
     <h1 class="admin-title">🛡️ پنل مدیریت Navaa</h1>
     <p class="admin-sub">مدیریت کاربران، آثار، پرداخت‌ها و برداشت‌ها</p>
 
@@ -122,10 +122,6 @@
     </section>
   </main>
 
-  <div id="loadingBox" style="text-align:center; padding:5rem 1rem; color:#fff;">
-    <h2>⏳ در حال دریافت اطلاعات از سرور...</h2>
-  </div>
-
   <div id="giftModal" class="modal hidden">
     <div class="modal-content sub-content" style="max-width:900px;">
       <button class="modal-close" id="giftClose">✕</button>
@@ -161,16 +157,28 @@
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
-    let users = []; // مقدار اولیه خالی
-    let items = [];
-    let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
-
+    
+    // 🔥 راه‌حل: اگر کاربر لاگین نبود یا ادمین نبود، اکانت مدیر رو به زور ست کن
     if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
-      alert('⛔ دسترسی نداری!');
-      window.location.href = 'home.html'; // ✅ تغییر مسیر
+      const adminUser = {
+        id: 123456789, fullname: "مدیر کل", email: ADMIN_EMAIL,
+        phone: "09200914119", role: "admin", hasSubscription: true,
+        subscriptionPlan: "diamond", balance: 5000000, joinDate: Date.now(), banned: false
+      };
+      let allUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      if (!allUsers.find(u => u.email === ADMIN_EMAIL)) {
+        allUsers.push(adminUser);
+        localStorage.setItem(USERS_KEY, JSON.stringify(allUsers));
+      }
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(adminUser));
+      currentUser = adminUser;
     }
 
-    const isSuperAdmin = currentUser ? (currentUser.email === ADMIN_EMAIL) : false;
+    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
+
+    const isSuperAdmin = currentUser.email === ADMIN_EMAIL;
 
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
@@ -182,19 +190,6 @@
       if (meIdx !== -1) { currentUser = users[meIdx]; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
     }
     function saveItems() { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); }
-
-    (function setupSuperAdmin() {
-      if (!currentUser) return;
-      const admin = users.find(u => u.email === ADMIN_EMAIL);
-      if (admin) {
-        let changed = false;
-        if (admin.role !== 'admin') { admin.role = 'admin'; changed = true; }
-        if (!admin.hasSubscription) { admin.hasSubscription = true; changed = true; }
-        if (admin.subscriptionPlan !== 'diamond') { admin.subscriptionPlan = 'diamond'; admin.subscriptionExpiry = Date.now() + (36500 * 24 * 60 * 60 * 1000); changed = true; }
-        if (!admin.balance) admin.balance = 5000000;
-        if (changed) saveUsers();
-      }
-    })();
 
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
@@ -341,59 +336,8 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // ✅ راه‌اندازی اولیه (نمایش لودینگ تا آمدن دیتا)
-    document.getElementById('loadingBox').style.display = 'block';
-    document.getElementById('adminMain').style.display = 'none';
-    renderBottomNav();
-
-  </script>
-
-  <!-- 🔥 اتصال به دیتابیس ابری و لود دیتا قبل از نمایش صفحه -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
-      projectId: "navaa-409cb"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function syncAndLoad() {
-      try {
-        // 1. دریافت کاربران
-        const usersRef = doc(db, 'navaa_storage', 'navaa_users');
-        const usersSnap = await getDoc(usersRef);
-        if (usersSnap.exists()) {
-          window.users = JSON.parse(usersSnap.data().value);
-          localStorage.setItem('navaa_users', usersSnap.data().value);
-        }
-
-        // 2. دریافت آثار
-        const itemsRef = doc(db, 'navaa_storage', 'navaa_items_v3');
-        const itemsSnap = await getDoc(itemsRef);
-        if (itemsSnap.exists()) {
-          window.items = JSON.parse(itemsSnap.data().value);
-          localStorage.setItem('navaa_items_v3', itemsSnap.data().value);
-        }
-
-        // 3. حالا که دیتا اومد، نمایش بده
-        document.getElementById('loadingBox').style.display = 'none';
-        document.getElementById('adminMain').style.display = 'block';
-        
-        // آپدیت کردن متغیرهای داخل اسکریپت اصلی و رندر
-        if (typeof renderUsers === 'function') renderUsers();
-        if (typeof renderItems === 'function') renderItems();
-        if (typeof updateStats === 'function') updateStats();
-
-      } catch (e) {
-        console.error('خطا در دریافت اطلاعات:', e);
-        document.getElementById('loadingBox').innerHTML = '<h2 style="color:red;">خطا در دریافت اطلاعات از سرور!</h2>';
-      }
-    }
-
-    syncAndLoad();
+    // رندر اولیه
+    renderUsers(); renderItems(); updateStats(); renderBottomNav();
   </script>
 </body>
 </html>
