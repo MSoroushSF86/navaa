@@ -7,47 +7,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: var(--black);
-      margin: 0;
-      padding: 1rem;
-      position: relative;
-    }
-    .back-home-btn {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      transition: 0.2s;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .back-home-btn:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.08);
-      border-color: var(--turquoise);
-    }
-    .auth-container {
-      background: var(--black-2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 40px rgba(0,240,212,0.1);
-    }
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--black); margin: 0; padding: 1rem; position: relative; }
+    .back-home-btn { position: absolute; top: 1.5rem; right: 1.5rem; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 10px; transition: 0.2s; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); }
+    .back-home-btn:hover { color: #fff; background: rgba(255,255,255,0.08); border-color: var(--turquoise); }
+    .auth-container { background: var(--black-2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 0 40px rgba(0,240,212,0.1); }
     .auth-tabs { display: flex; background: var(--black-3); border-radius: 12px; padding: 0.3rem; margin-bottom: 2rem; }
     .auth-tab { flex: 1; padding: 0.8rem; background: transparent; border: none; color: var(--text-dim); font-family: inherit; font-weight: 700; border-radius: 10px; cursor: pointer; transition: 0.3s; }
     .auth-tab.active { background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c; }
@@ -66,9 +29,7 @@
 </head>
 <body>
 
-  <a href="home.html" class="back-home-btn">
-    🏠 بازگشت به صفحه اصلی
-  </a>
+  <a href="home.html" class="back-home-btn">🏠 بازگشت به صفحه اصلی</a>
 
   <div class="auth-container">
     <div class="auth-tabs">
@@ -122,10 +83,7 @@
     };
 
     document.querySelectorAll('.auth-tab').forEach(tab => {
-      tab.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchTab(tab.dataset.target);
-      });
+      tab.addEventListener('click', (e) => { e.preventDefault(); switchTab(tab.dataset.target); });
     });
 
     document.getElementById('loginForm').addEventListener('submit', e => {
@@ -167,9 +125,16 @@
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
-      // ✅ ارسال به سرور
+      // ✅ ارسال به سرور با ارورگیری
       if (window.saveToCloud) {
-        await window.saveToCloud(USERS_KEY, JSON.stringify(users));
+        try {
+          await window.saveToCloud(USERS_KEY, JSON.stringify(users));
+          console.log('✅ کاربر در سرور ذخیره شد');
+        } catch (err) {
+          console.error(err);
+          alert('❌ خطا در اتصال به سرور! لطفاً اینترنت و قوانین Firebase را چک کنید.');
+          return;
+        }
       }
       
       localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
@@ -178,35 +143,36 @@
     });
   </script>
 
-  <!-- ✅ اتصال مستقیم و بدون خطا به Firebase -->
+  <!-- 🔥 اتصال با کانفیگ کامل و درست -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const app = initializeApp({
+    const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
-      projectId: "navaa-409cb"
-    });
-    const db = getFirestore(app);
-
-    // تابع ارسال به سرور
-    window.saveToCloud = async function(key, value) {
-      try {
-        await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
-        console.log('✅ اطلاعات روی سرور ذخیره شد.');
-      } catch (e) {
-        console.error('❌ خطا در ذخیره:', e);
-      }
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
     };
 
-    // سینک کردن موقع لود شدن صفحه
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveToCloud = async function(key, value) {
+      await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
+    };
+
     async function syncOnLoad() {
         try {
             const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
             if (snap.exists()) {
                 localStorage.setItem('navaa_users', snap.data().value);
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error("خطا در سینک اولیه:", e);
+        }
     }
     syncOnLoad();
   </script>
