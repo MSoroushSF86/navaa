@@ -9,17 +9,16 @@
 </head>
 <body>
 
-   <!-- ============ HEADER ============ -->
+  <!-- ============ HEADER ============ -->
   <header>
     <div class="header-inner">
-      <a href="index.html" class="logo-small" title="صفحه اصلی">
+      <a href="home.html" class="logo-small" title="صفحه اصلی">
         <span class="logo-icon-sm">🎵</span>
         <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
       </a>
 
       <div class="header-actions" style="display:flex; align-items:center; gap:1rem;">
-        <!-- دکمه بازگشت به صفحه اصلی -->
-        <a href="index.html" style="
+        <a href="home.html" style="
           color: var(--text-dim); 
           text-decoration: none; 
           font-size: .85rem; 
@@ -34,7 +33,6 @@
           🏠 صفحه اصلی
         </a>
 
-        <!-- پروفایل کاربر -->
         <a href="profile.html" class="user-greeting" id="userGreeting" title="پروفایل"></a>
       </div>
     </div>
@@ -206,8 +204,6 @@
       <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
 
       <div class="plans">
-
-        <!-- 🥉 برنزی -->
         <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
           <div class="plan-header">
             <span class="plan-name">🥉 برنزی</span>
@@ -227,7 +223,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- 🥈 طلایی -->
         <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="180">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
           <div class="plan-header">
@@ -248,7 +243,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- 💎 الماسی -->
         <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="540">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
@@ -267,7 +261,6 @@
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
-
       </div>
 
       <p class="sub-hint">💳 پرداخت امن از طریق درگاه بانکی</p>
@@ -284,19 +277,15 @@
 
   <!-- ============ SCRIPT: مدیریت پارامترهای URL ============ -->
   <script>
-    // ✅ خواندن پارامترهای URL برای پلن
     window.addEventListener('load', function() {
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
           const subModal = document.getElementById('subModal');
           if (subModal) subModal.classList.remove('hidden');
-
-          // ✅ اگه پلن مشخص شده بود، مستقیم برو سراغ پرداخت
           const planName = params.get('plan');
           const price = params.get('price');
           const days = params.get('days');
-
           if (planName && price && days && typeof startPayment === 'function') {
             setTimeout(() => {
               subModal.classList.add('hidden');
@@ -307,11 +296,56 @@
       }, 300);
     });
   </script>
+  
   <script src="js/app.js"></script>
   
-  <!-- 🔥 اتصال گالری به Firebase -->
+  <!-- 🔥 اتصال مستقیم گالری به Firebase (بدون فایل واسطه) -->
   <script type="module">
-    import './js/gallery-sync.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // دریافت آثار از دیتابیس ابری و سینک با مرورگر
+    async function loadItemsFromCloud() {
+      try {
+        const docRef = doc(db, 'navaa_storage', 'navaa_items_v3');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const cloudItems = JSON.parse(docSnap.data().value);
+          localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
+          if (window.DB) {
+            window.DB.items = cloudItems;
+            if (typeof renderGallery === 'function') renderGallery();
+          }
+        }
+      } catch (e) {
+        console.log('خطا در دریافت از سرور:', e);
+      }
+    }
+
+    // تابعی برای ارسال آثار به دیتابیس ابری (در app.js ازش استفاده میشه)
+    window.saveItemsToCloud = async function(items) {
+      try {
+        const docRef = doc(db, 'navaa_storage', 'navaa_items_v3');
+        await setDoc(docRef, { value: JSON.stringify(items), updatedAt: Date.now() });
+        console.log('☁️ اثر در سرور ذخیره شد!');
+      } catch (e) {
+        console.log('خطا در ذخیره در سرور:', e);
+      }
+    };
+
+    // اجرای اولیه
+    loadItemsFromCloud();
   </script>
 </body>
 </html>
